@@ -15,9 +15,9 @@ def lists(user_id):
     """
     redis_client = current_app.config['redis_client']
 
-
     if(request.method == 'GET'):
         lists = redis_client.lrange('lists:' + user_id, 0, -1)
+        lists = [item.decode() for item in lists]
         return {'status': 200, 'message': 'Success', 'data': {'lists': lists}}, 200
 
     if(request.method == 'PUT'):
