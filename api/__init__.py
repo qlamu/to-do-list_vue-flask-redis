@@ -21,10 +21,10 @@ def create_app(testing=False):
     app.register_blueprint(bp_todos)
 
     if(testing):
-        redis_client = fakeredis.FakeStrictRedis()
+        redis_client = fakeredis.FakeStrictRedis(decode_responses=True)
         app.testing = True
     else:
-        redis_client = redis.Redis(host='localhost', port=6379, db=0)
+        redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
     app.config['redis_client'] = redis_client
 
     @app.route('/')
@@ -44,7 +44,7 @@ def create_app(testing=False):
     def add_log():
         """
         [POST] Add a new log
-            Expects: a 'application/json' request with the keys:
+            Expects: a 'application/json' request with the fields:
                 'username': the user who realized the action,
                 'status': one of FAIL, WARNING, SUCCESS,
                 'message': description of the performed action

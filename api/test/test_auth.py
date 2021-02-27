@@ -12,7 +12,7 @@ def test_register(client: FlaskClient, redis_client: FakeStrictRedis):
 
     # No data
     res = client.post('/account')
-    assert res.get_json()['message'] == "Expects a 'application/json' request with the keys: 'username', 'password'"
+    assert res.get_json()['message'] == "Expects a 'application/json' request with the fields: 'username', 'password'"
 
     # Proper data
     res = client.post('/account', json={'username': 'usr', 'password': 'notsosecret'})
@@ -29,7 +29,7 @@ def test_login(client: FlaskClient, redis_client: FakeStrictRedis):
 
     # No data
     res = client.post('/login')
-    assert res.get_json()['message'] == "Expects a 'application/json' request with the keys: 'username', 'password'"
+    assert res.get_json()['message'] == "Expects a 'application/json' request with the fields: 'username', 'password'"
 
     # Invalid username
     res = client.post('/login', json={'username': 'noexist', 'password': 'notsosecret'})
@@ -44,6 +44,6 @@ def test_login(client: FlaskClient, redis_client: FakeStrictRedis):
     assert res.status_code == 200
 
     # Check JWT token
-    user_id = redis_client.hget('users', 'usr').decode()
+    user_id = redis_client.hget('users', 'usr')
     decoded_jwt = jwt.decode(res.get_json()['data']['jwt'], os.environ['JWT_SECRET'], algorithms=['HS256'])
     assert decoded_jwt['user_id'] == user_id
