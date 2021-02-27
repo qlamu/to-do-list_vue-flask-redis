@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app, request
-
-from api.utils import check_jwt_token
+from marshmallow import ValidationError
+from api.utils.decorators import check_jwt_token
+from api.utils.schemas import AddTodoSchema, UpdateTodoSchema
 
 bp_todos = Blueprint("todos", __name__)
 
@@ -24,9 +25,10 @@ def todos(user_id: str, list_id: str):
         return {'status': 200, 'message': 'Todos access authorized', 'data': todos}, 200
 
     if(request.method == 'PUT'):
-        data = request.get_json()
-        if((data is None) or ('description' not in data)):
-            return {'status': 400, 'message': "Expects a 'application/json' request with the field: 'todo'"}, 400
+        try:
+            data = AddTodoSchema().load(request.get_json())
+        except ValidationError as err:
+            return {'status': 400, 'message': err.messages}, 400
 
         new_todo_id = redis_client.incr('next_todo_id', 1)
         redis_client.sadd('list:' + list_id, new_todo_id)
@@ -63,15 +65,14 @@ def crud_todos(user_id: str, list_id: str, todo_id: str):
         return {'status': 400, 'message': 'Todo %s does not exist' % todo_id}, 400
 
     if(request.method == 'PATCH'):
-        data = request.get_json()
-        if((data is None) or ('description' not in data or 'is_done' not in data)):
-            return {'status': 400, 'message': "Expects a 'application/json' request with the field: 'description' or 'is_done', or both"}, 400
+        try:
+            data = UpdateTodoSchema().load(request.get_json())
+        except ValidationError as err:
+            return {'status': 400, 'message': err.messages}, 400
 
         new_mapping: dict = {}
         if('description' in data): new_mapping['description'] = data['description']
-        if('is_done' in data):
-
-            new_mapping['is_done'] = data['is_done']
+        if('is_done' in data): new_mapping['is_done'] = data['is_done']
         redis_client.hset('todo:' + todo_id, mapping=new_mapping)
 
         return {'status': 200 , 'message': 'Todo %s patched' % todo_id}, 200

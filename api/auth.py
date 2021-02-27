@@ -2,6 +2,8 @@ from flask import Blueprint, current_app, request
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import jwt
+from marshmallow import ValidationError
+from api.utils.schemas import AuthSchema
 
 bp_auth = Blueprint("auth", __name__)
 
@@ -14,9 +16,10 @@ def register():
     """
     redis_client = current_app.config['redis_client']
 
-    data = request.get_json()
-    if((data is None) or ('username' not in data) or ('password' not in data)):
-        return {'status': 400, 'message': "Expects a 'application/json' request with the fields: 'username', 'password'"}, 400
+    try:
+        data = AuthSchema().load(request.get_json())
+    except ValidationError as err:
+        return {'status': 400, 'message': err.messages}, 400
 
     if(redis_client.hexists('users', data['username'])):
         return {'status': 400, 'message': 'The user already exists'}, 400
@@ -37,9 +40,10 @@ def login():
     """
     redis_client = current_app.config['redis_client']
 
-    data = request.get_json()
-    if((data is None) or ('username' not in data) or ('password' not in data)):
-        return {'status': 400, 'message': "Expects a 'application/json' request with the fields: 'username', 'password'"}, 400
+    try:
+        data = AuthSchema().load(request.get_json())
+    except ValidationError as err:
+        return {'status': 400, 'message': err.messages}, 400
 
     user_id = redis_client.hget('users', data['username'])
     if(user_id is None):
