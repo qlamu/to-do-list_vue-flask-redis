@@ -21,5 +21,5 @@ class UpdateTodoSchema(Schema):
     is_done = fields.Int(strict=True, validate=OneOf([0, 1]))
 
     @validates_schema
-    def validate(self, data):
+    def validate(self, data, **kwargs):
         'description' in data or 'is_done' in data

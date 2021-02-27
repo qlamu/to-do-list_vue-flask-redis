@@ -22,7 +22,7 @@ def check_jwt_token(f):
         except:
             return {'status': 401, 'message': 'JWT token invalid'}, 401
 
-        if(not current_app.config['redis_client'].exists('user:' + user_id)):
+        if(not current_app.config['redis_client'].exists('user:{}'.format(user_id))):
             return {'status': 401, 'message': 'JWT token references unknown user'}, 401
 
         return f(user_id, *args, **kwargs)

@@ -12,7 +12,7 @@ def test_register(client: FlaskClient, redis_client: FakeStrictRedis):
 
     # No data
     res = client.post('/account')
-    assert res.get_json()['message'] == "Expects a 'application/json' request with the fields: 'username', 'password'"
+    assert res.status_code == 400
 
     # Proper data
     res = client.post('/account', json={'username': 'usr', 'password': 'notsosecret'})
@@ -21,7 +21,7 @@ def test_register(client: FlaskClient, redis_client: FakeStrictRedis):
 
     # User alreay exist
     res = client.post('/account', json={'username': 'usr', 'password': 'notsosecret'})
-    assert res.get_json()['message'] == 'The user already exists'
+    assert res.status_code == 400
 
 
 def test_login(client: FlaskClient, redis_client: FakeStrictRedis):
@@ -29,15 +29,15 @@ def test_login(client: FlaskClient, redis_client: FakeStrictRedis):
 
     # No data
     res = client.post('/login')
-    assert res.get_json()['message'] == "Expects a 'application/json' request with the fields: 'username', 'password'"
+    assert res.status_code == 400
 
     # Invalid username
     res = client.post('/login', json={'username': 'noexist', 'password': 'notsosecret'})
-    assert res.get_json()['message'] == 'User noexist does not exist'
+    assert res.status_code == 404
 
     # Invalid password
     res = client.post('/login', json={'username': 'usr', 'password': 'invalid'})
-    assert res.get_json()['message'] == 'Invalid password'
+    assert res.status_code == 400
 
     # Proper login
     res = client.post('/login', json={'username': 'usr', 'password': 'notsosecret'})

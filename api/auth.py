@@ -26,7 +26,7 @@ def register():
 
     user_id = redis_client.incr('next_user_id', 1)
     redis_client.hset('users', mapping={data['username']: user_id})
-    redis_client.hset('user:%d' % user_id, mapping={
+    redis_client.hset('user:{}'.format(user_id), mapping={
                       'username': data['username'], 'password': generate_password_hash(data['password'])})
 
     return {'status': 201, 'message': 'User created'}, 201
@@ -47,9 +47,9 @@ def login():
 
     user_id = redis_client.hget('users', data['username'])
     if(user_id is None):
-        return {'status': 404, 'message': "User %s does not exist" % data['username']}, 404
+        return {'status': 404, 'message': "User does not exist"}, 404
 
-    user_pwhash = redis_client.hget('user:%s' % user_id, 'password')
+    user_pwhash = redis_client.hget('user:{}'.format(user_id), 'password')
     if(user_pwhash and not check_password_hash(user_pwhash, data['password'])):
         return {'status': 400, 'message': 'Invalid password'}, 400
 
