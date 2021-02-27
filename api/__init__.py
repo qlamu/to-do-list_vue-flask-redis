@@ -1,11 +1,9 @@
-import os
-from flask import Flask, request
+from flask import Flask
 from werkzeug.utils import redirect
 import fakeredis
 
 import redis
 from dotenv import load_dotenv
-from functools import wraps
 
 from api.auth import bp_auth
 from api.lists import bp_lists
@@ -59,3 +57,8 @@ def create_app(testing=False):
         return "", 501
 
     return app
+
+
+if __name__ == "__main__":
+    app = create_app(True)
+    app.run()

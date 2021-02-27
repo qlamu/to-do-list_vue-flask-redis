@@ -13,9 +13,9 @@ def lists(user_id: str):
     This endpoint require authentication
     """
     redis_client = current_app.config['redis_client']
-
+    
     if(request.method == 'GET'):
-        lists = [redis_client.hgetall('list_infos:' + id).update({'list_id': id})
+        lists = [redis_client.hgetall('list_infos:' + id) | {'list_id': id}
                  for id in redis_client.smembers('lists:' + user_id)]
 
         return {'status': 200, 'message': 'Success', 'data': {'lists': lists}}, 200
@@ -30,7 +30,7 @@ def lists(user_id: str):
         redis_client.hset('list_infos:%d' % list_id, 'title', data['title'])
         return {'status': 201, 'message': 'Created', 'data': {'list_id': list_id}}, 201
 
-    return {'status': 400, 'message': 'Requests to /lists must be GET or PUT'}, 400
+    return {'status': 405, 'message': 'Requests to /lists must be GET or PUT'}, 405
 
 
 @bp_lists.route('/lists/<string:list_id>', methods=['GET', 'DELETE', 'PATCH'])
@@ -61,3 +61,5 @@ def crud_lists(user_id: str, list_id: str):
 
         redis_client.hset('list_infos:' + list_id, 'title', data['title'])
         return {'status': 200, 'message': 'List %s patched' % list_id}, 200
+
+    return {'status': 405, 'message': 'Requests to /lists/<id_list> must be GET, DELETE or PATCH'}, 405
