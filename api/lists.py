@@ -17,8 +17,8 @@ def lists(user_id: int):
     redis_client = current_app.config['redis_client']
 
     if(request.method == 'GET'):
-        lists = [redis_client.hgetall('list_infos:{}'.format(id)) | {'list_id': id}
-                 for id in redis_client.smembers('lists:{}'.format(user_id))]
+        lists = [redis_client.hgetall(f'list_infos:{id}') | {'list_id': id}
+                 for id in redis_client.smembers(f'lists:{user_id}')]
 
         return {'status': 200, 'message': 'Success', 'data': {'lists': lists}}, 200
 
@@ -29,8 +29,8 @@ def lists(user_id: int):
             return {'status': 400, 'message': err.messages}, 400
 
         list_id = redis_client.incr('next_list_id', 1)
-        redis_client.sadd('lists:{}'.format(user_id), list_id)
-        redis_client.hset('list_infos:{}'.format(list_id), 'title', data['title'])
+        redis_client.sadd(f'lists:{user_id}', list_id)
+        redis_client.hset(f'list_infos:{list_id}', 'title', data['title'])
         return {'status': 201, 'message': 'Created', 'data': {'list_id': list_id}}, 201
 
     return {'status': 405, 'message': 'Requests to /lists must be GET or PUT'}, 405
@@ -45,16 +45,16 @@ def crud_lists(user_id: int, list_id: int):
     """
     redis_client = current_app.config['redis_client']
 
-    if(not redis_client.sismember('lists:{}'.format(user_id), list_id)):
+    if(not redis_client.sismember(f'lists:{user_id}', list_id)):
         return {'status': 403, 'message': 'Invalid owner for the selected list'}, 403
 
     if(request.method == 'GET'):
-        return {'status': 200, 'message': 'Success', 'data': redis_client.hgetall('list_infos:{}'.format(list_id))}, 200
+        return {'status': 200, 'message': 'Success', 'data': redis_client.hgetall(f'list_infos:{list_id}')}, 200
 
     if(request.method == 'DELETE'):
-        [redis_client.delete('todo:{}'.format(id)) for id in redis_client.smembers('list_content:{}'.format(list_id))]
-        redis_client.delete('list_infos:{}'.format(list_id), 'list_content:{}'.format(list_id))
-        redis_client.srem('lists:{}'.format(user_id), list_id)
+        [redis_client.delete(f'todo:{id}') for id in redis_client.smembers(f'list_content:{list_id}')]
+        redis_client.delete(f'list_infos:{list_id}', f'list_content:{list_id}')
+        redis_client.srem(f'lists:{user_id}', list_id)
         return {'status': 200, 'message': 'The list has been deleted'}, 200
 
     if(request.method == 'PATCH'):
@@ -63,7 +63,7 @@ def crud_lists(user_id: int, list_id: int):
         except ValidationError as err:
             return {'status': 400, 'message': err.messages}, 400
 
-        redis_client.hset('list_infos:{}'.format(list_id), 'title', data['title'])
+        redis_client.hset(f'list_infos:{list_id}', 'title', data['title'])
         return {'status': 200, 'message': 'List patched'}, 200
 
     return {'status': 405, 'message': 'Requests to /lists/<id_list> must be GET, DELETE or PATCH'}, 405

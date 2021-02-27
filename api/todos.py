@@ -16,11 +16,11 @@ def todos(user_id: int, list_id: int):
     """
     redis_client = current_app.config['redis_client']
 
-    if(not redis_client.sismember('lists:{}'.format(user_id), list_id)):
+    if(not redis_client.sismember(f'lists:{user_id}', list_id)):
         return {'status': 403, 'message': 'Invalid owner for the selected list'}, 401
 
     if(request.method == 'GET'):
-        todos = [redis_client.hgetall('todo:{}'.format(id)) | {'todo_id': id} for id in redis_client.smembers('list_content:{}'.format(list_id))]
+        todos = [redis_client.hgetall(f'todo:{id}') | {'todo_id': id} for id in redis_client.smembers(f'list_content:{list_id}')]
         return {'status': 200, 'message': 'Todos access authorized', 'data': todos}, 200
 
     if(request.method == 'PUT'):
@@ -30,8 +30,8 @@ def todos(user_id: int, list_id: int):
             return {'status': 400, 'message': err.messages}, 400
 
         new_todo_id = redis_client.incr('next_todo_id', 1)
-        redis_client.sadd('list_content:{}'.format(list_id), new_todo_id)
-        redis_client.hset('todo:{}'.format(new_todo_id),
+        redis_client.sadd(f'list_content:{list_id}', new_todo_id)
+        redis_client.hset(f'todo:{new_todo_id}',
                           mapping={'description': data['description'], 'is_done': 0})
 
         return {'status': 201, 'message': 'Todo created succesfully', 'data': { 'todo_id': new_todo_id }}, 201
@@ -51,15 +51,15 @@ def crud_todos(user_id: int, list_id: int, todo_id: int):
     """
     redis_client = current_app.config['redis_client']
 
-    if(not (redis_client.sismember('lists:{}'.format(user_id), list_id) and redis_client.sismember('list_content:{}'.format(list_id), todo_id))):
+    if(not (redis_client.sismember(f'lists:{user_id}', list_id) and redis_client.sismember(f'list_content:{list_id}', todo_id))):
         return {'status': 403, 'message': 'Invalid owner for the selected list or Todo does not exist'}, 401
 
     if(request.method == 'GET'):
-        return {'status': 200, 'message': 'Success', 'data': redis_client.hgetall('todo:{}'.format(todo_id))}, 200
+        return {'status': 200, 'message': 'Success', 'data': redis_client.hgetall(f'todo:{todo_id}')}, 200
 
     if(request.method == 'DELETE'):
-        redis_client.delete('todo:{}'.format(todo_id))
-        redis_client.srem('list_content:{}'.format(list_id), todo_id)
+        redis_client.delete(f'todo:{todo_id}')
+        redis_client.srem(f'list_content:{list_id}', todo_id)
         return {'status': 200 , 'message': 'Todo deleted'}, 200
 
     if(request.method == 'PATCH'):
@@ -71,7 +71,7 @@ def crud_todos(user_id: int, list_id: int, todo_id: int):
         new_mapping: dict = {}
         if('description' in data): new_mapping['description'] = data['description']
         if('is_done' in data): new_mapping['is_done'] = data['is_done']
-        redis_client.hset('todo:{}'.format(todo_id), mapping=new_mapping)
+        redis_client.hset(f'todo:{todo_id}', mapping=new_mapping)
 
         return {'status': 200 , 'message': 'Todo patched'}, 200
 
