@@ -33,7 +33,7 @@ def test_login(client: FlaskClient, redis_client: FakeStrictRedis):
 
     # Invalid username
     res = client.post('/login', json={'username': 'noexist', 'password': 'notsosecret'})
-    assert res.status_code == 404
+    assert res.status_code == 400
 
     # Invalid password
     res = client.post('/login', json={'username': 'usr', 'password': 'invalid'})

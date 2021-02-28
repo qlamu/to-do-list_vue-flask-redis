@@ -10,9 +10,38 @@ bp_auth = Blueprint("auth", __name__)
 
 @bp_auth.route('/account', methods=['POST'])
 def register():
-    """
-    [POST] Register a new user
-        Expects: a 'application/json' request with the fields: 'username', 'password'
+    """Create a new user
+    ---
+    tags:
+      - "Authentication"
+    consumes:
+      - "application/json"
+    produces:
+      - "application/json"
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/AuthSchema"
+    definitions:
+      AuthSchema:
+        type: object
+        required:
+        - username
+        - password
+        properties:
+          username:
+            type: string
+            example: John Doe
+          password:
+            type: string
+            example: h4sh3dp4ss
+    responses:
+      201:
+        description: User created
+      400:
+        description: The user already exists or the supplied JSON is not formatted properly.
     """
     redis_client = current_app.config['redis_client']
 
@@ -34,9 +63,41 @@ def register():
 
 @bp_auth.route('/login', methods=['POST'])
 def login():
-    """
-    [POST] Login an existing user
-        Expects: a 'application/json' request with the fields: 'username', 'password'
+    """Login and receive a JWT Token
+    Generate a unique JWT token corresponding to a user if the login is successful, the token is needed for most of the API routes.
+    ---
+    tags:
+      - "Authentication"
+    consumes:
+      - "application/json"
+    produces:
+      - "application/json"
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: "#/definitions/AuthSchema"
+    responses:
+      200:
+        description: Return a unique JWT associated to the user.
+        schema:
+          type: object
+          properties:
+            status: 
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Logged in
+            data:
+              type: object
+              properties:
+                jwt: 
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+      400:
+        description: User does not exist, the password is invalid or the supplied JSON is not formatted properly.
     """
     redis_client = current_app.config['redis_client']
 
@@ -47,11 +108,11 @@ def login():
 
     user_id = redis_client.hget('users', data['username'])
     if(user_id is None):
-        return {'status': 404, 'message': "User does not exist"}, 404
+        return {'status': 400, 'message': "User does not exist, or the password is invalid"}, 400
 
     user_pwhash = redis_client.hget(f'user:{user_id}', 'password')
     if(user_pwhash and not check_password_hash(user_pwhash, data['password'])):
-        return {'status': 400, 'message': 'Invalid password'}, 400
+        return {'status': 400, 'message': 'User does not exist, or the password is invalid'}, 400
 
     encoded_jwt = jwt.encode({'user_id': user_id},
                              os.environ['JWT_SECRET'], algorithm='HS256')

@@ -18,7 +18,7 @@ def create_app(testing=False):
     app.config['SWAGGER'] = {
         'title': 'Todos API',
         'version': 'v1',
-        'description': 'API for a simple todo app, source: [https://github.com/qlamu/to-do-list_vue-flask-redis](https://github.com/qlamu/to-do-list_vue-flask-redis)',
+        'description': 'API for a todo app, [https://github.com/qlamu/to-do-list_vue-flask-redis](https://github.com/qlamu/to-do-list_vue-flask-redis)',
         'termsOfService': '',
         'hide_top_bar': True,
     }
