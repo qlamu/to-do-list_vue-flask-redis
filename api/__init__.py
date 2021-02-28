@@ -1,19 +1,29 @@
 from flask import Flask
 from werkzeug.utils import redirect
 import fakeredis
-
 import redis
 from dotenv import load_dotenv
+from flasgger import Swagger
 
-from api.auth import bp_auth
-from api.lists import bp_lists
-from api.todos import bp_todos
+from api.blueprints.auth import bp_auth
+from api.blueprints.lists import bp_lists
+from api.blueprints.todos import bp_todos
 
 
 def create_app(testing=False):
     load_dotenv()
 
     app = Flask(__name__)
+
+    app.config['SWAGGER'] = {
+        'title': 'Todos API',
+        'version': 'v1',
+        'description': 'API for a simple todo app, source: [https://github.com/qlamu/to-do-list_vue-flask-redis](https://github.com/qlamu/to-do-list_vue-flask-redis)',
+        'termsOfService': '',
+        'hide_top_bar': True,
+    }
+
+    Swagger(app)
     app.register_blueprint(bp_auth)
     app.register_blueprint(bp_lists)
     app.register_blueprint(bp_todos)
@@ -26,35 +36,8 @@ def create_app(testing=False):
     app.config['redis_client'] = redis_client
 
     @app.route('/')
-    def index():
-        return redirect('/help')
-
     @app.route('/help')
-    def help():
-        """Print available routes"""
-        func_list = {}
-        for rule in app.url_map.iter_rules():
-            if rule.endpoint != 'static':
-                func_list[rule.rule] = app.view_functions[rule.endpoint].__doc__
-        return func_list
-
-    @app.route('/logger/log', methods=['POST'])
-    def add_log():
-        """
-        [POST] Add a new log
-            Expects: a 'application/json' request with the fields:
-                'username': the user who realized the action,
-                'status': one of FAIL, WARNING, SUCCESS,
-                'message': description of the performed action
-        """
-        return "", 501
-
-    @app.route('/logger/log')
-    def get_logs():
-        """
-        [GET] Get all the logs from the database
-        """
-        return "", 501
+    def index(): return redirect('/apidocs')
 
     return app
 
