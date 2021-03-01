@@ -1,8 +1,8 @@
-openapi: '3.0.3'
+openapi: "3.0.3"
 
 info:
   title: Todos API
-  version: '1.0'
+  version: "1.0"
   description: API for a todo app, [https://github.com/qlamu/to-do-list_vue-flask-redis](https://github.com/qlamu/to-do-list_vue-flask-redis)
 
 paths:
@@ -22,7 +22,7 @@ paths:
           description: User created
         400:
           description: The user already exists or the supplied JSON is not formatted properly.
-  
+
   /login:
     post:
       summary: Create a new user
@@ -42,7 +42,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: 
+                  status:
                     type: integer
                     example: 200
                   message:
@@ -51,7 +51,7 @@ paths:
                   data:
                     type: object
                     properties:
-                      jwt: 
+                      jwt:
                         type: string
                         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
         400:
@@ -72,7 +72,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: 
+                  status:
                     type: integer
                     example: 200
                   message:
@@ -81,9 +81,9 @@ paths:
                   data:
                     type: object
                     properties:
-                      lists: 
+                      lists:
                         type: array
-                        items: 
+                        items:
                           $ref: "#/components/schemas/TodoList"
     put:
       summary: Create a new list for the current user
@@ -111,7 +111,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: 
+                  status:
                     type: integer
                     example: 200
                   message:
@@ -120,16 +120,13 @@ paths:
                   data:
                     type: object
                     properties:
-                      list_id: 
+                      list_id:
                         type: integer
                         example: 1
         400:
           description: Supplied request body is not formatted properly.
 
-      
-
-
-components:    
+components:
   securitySchemes:
     JWT:
       type: http
@@ -140,8 +137,8 @@ components:
     Auth:
       type: object
       required:
-      - username
-      - password
+        - username
+        - password
       properties:
         username:
           type: string
