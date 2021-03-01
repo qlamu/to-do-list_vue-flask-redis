@@ -25,7 +25,7 @@ def todos(user_id: int, list_id: int):
             redis_client.hgetall(f"todo:{id}") | {"todo_id": id}
             for id in redis_client.smembers(f"list_content:{list_id}")
         ]
-        return {"status": 200, "message": "Todos access authorized", "data": todos}, 200
+        return {"status": 200, "message": "OK", "data": {"todos": todos}}, 200
 
     if request.method == "PUT":
         try:
@@ -37,7 +37,7 @@ def todos(user_id: int, list_id: int):
         redis_client.sadd(f"list_content:{list_id}", new_todo_id)
         redis_client.hset(
             f"todo:{new_todo_id}",
-            mapping={"description": data["description"], "is_done": 0},
+            mapping={"description": data["description"], "is_done": data.get("is_done", 0)},
         )
 
         return {
@@ -77,7 +77,7 @@ def crud_todos(user_id: int, list_id: int, todo_id: int):
         return {
             "status": 200,
             "message": "Success",
-            "data": redis_client.hgetall(f"todo:{todo_id}"),
+            "data": {"todo": redis_client.hgetall(f"todo:{todo_id}")},
         }, 200
 
     if request.method == "DELETE":

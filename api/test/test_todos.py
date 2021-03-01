@@ -55,16 +55,16 @@ def test_get_todo(client: FlaskClient, redis_client: FakeStrictRedis):
     assert res.status_code == 200
     json = res.get_json()
     assert "data" in json
-    assert len(json["data"]) == 2
-    assert "description" in json["data"][0]
-    assert "is_done" in json["data"][0]
-    assert "todo_id" in json["data"][0]
+    assert "todos" in json["data"]
+    assert len(json["data"]["todos"]) == 2
+    assert "description" in json["data"]["todos"][0]
+    assert "is_done" in json["data"]["todos"][0]
+    assert "todo_id" in json["data"]["todos"][0]
 
 
 def test_get_specific_todo(client: FlaskClient, redis_client: FakeStrictRedis):
     auth_token, list_id = login_and_create_list(client, redis_client)
 
-    # Add todos
     res = client.put(
         f"/lists/todos/{list_id}",
         headers={"Authorization": "Bearer " + auth_token},
@@ -84,8 +84,9 @@ def test_get_specific_todo(client: FlaskClient, redis_client: FakeStrictRedis):
     assert res.status_code == 200
     json = res.get_json()
     assert "data" in json
-    assert "description" in json["data"]
-    assert "is_done" in json["data"]
+    assert "todo" in json["data"]
+    assert "description" in json["data"]["todo"]
+    assert "is_done" in json["data"]["todo"]
 
 
 def test_patch_specific_todo(client: FlaskClient, redis_client: FakeStrictRedis):

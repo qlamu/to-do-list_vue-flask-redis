@@ -202,6 +202,176 @@ paths:
         400:
           description: Supplied request body is not formatted properly.
 
+  /lists/todos/{list_id}:
+    get:
+      summary: Get all the todos from a list by id.
+      tags:
+        - Todos
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: list_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Created
+                  data:
+                    type: object
+                    properties:
+                      todos:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Todo"
+        403:
+          description: The authenticated user is not the owner of the list
+    put:
+      summary: Create a new todo in a list
+      tags:
+        - Todos
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: list_id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Todo"
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: Created
+                  data:
+                    type: object
+                    properties:
+                      todo_id:
+                        type: integer
+        400:
+          description: Supplied request body is not formatted properly.
+        403:
+          description: The authenticated user is not the owner of the list
+
+  /lists/todos/{list_id}/{todo_id}:
+    get:
+      summary: Get a todo by id
+      tags:
+        - Todos
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: list_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: todo_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Success
+                  data:
+                    type: object
+                    properties:
+                      todo:
+                        $ref: "#/components/schemas/Todo"
+        403:
+          description: The authenticated user is not the owner of the list
+    delete:
+      summary: Delete a todo by id
+      tags:
+        - Todos
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: list_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: todo_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: OK
+        403:
+          description: The authenticated user is not the owner of the list
+    patch:
+      summary: Update a todo by id
+      tags:
+        - Todos
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: list_id
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: todo_id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Todo"
+      responses:
+        200:
+          description: OK
+        400:
+          description: Supplied request body is not formatted properly.
+        403:
+          description: The authenticated user is not the owner of the list
+
   /logger:
     get:
       summary: Get all logs
@@ -215,7 +385,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: 
+                  status:
                     type: integer
                     example: 200
                   message:
