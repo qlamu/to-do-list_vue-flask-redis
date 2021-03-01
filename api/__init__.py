@@ -2,7 +2,6 @@ import os
 import redis
 import fakeredis
 from flask import Flask, render_template
-from dotenv import load_dotenv
 
 from api.blueprints.auth import bp_auth
 from api.blueprints.lists import bp_lists
@@ -11,7 +10,6 @@ from api.blueprints.logger import bp_logger
 
 
 def create_app(testing=False):
-    load_dotenv()
 
     app = Flask(__name__)
     app.register_blueprint(bp_auth)
