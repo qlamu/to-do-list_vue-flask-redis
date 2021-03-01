@@ -10,38 +10,9 @@ bp_auth = Blueprint("auth", __name__)
 
 @bp_auth.route('/account', methods=['POST'])
 def register():
-    """Create a new user
-    ---
-    tags:
-      - "Authentication"
-    consumes:
-      - "application/json"
-    produces:
-      - "application/json"
-    parameters:
-      - name: body
-        in: body
-        required: true
-        schema:
-          $ref: "#/definitions/AuthSchema"
-    definitions:
-      AuthSchema:
-        type: object
-        required:
-        - username
-        - password
-        properties:
-          username:
-            type: string
-            example: John Doe
-          password:
-            type: string
-            example: h4sh3dp4ss
-    responses:
-      201:
-        description: User created
-      400:
-        description: The user already exists or the supplied JSON is not formatted properly.
+    """
+    [POST] Register a new user
+        Expects: a 'application/json' request with the fields: 'username', 'password'
     """
     redis_client = current_app.config['redis_client']
 
@@ -63,41 +34,9 @@ def register():
 
 @bp_auth.route('/login', methods=['POST'])
 def login():
-    """Login and receive a JWT Token
-    Generate a unique JWT token corresponding to a user if the login is successful, the token is needed for most of the API routes.
-    ---
-    tags:
-      - "Authentication"
-    consumes:
-      - "application/json"
-    produces:
-      - "application/json"
-    parameters:
-      - name: body
-        in: body
-        required: true
-        schema:
-          $ref: "#/definitions/AuthSchema"
-    responses:
-      200:
-        description: Return a unique JWT associated to the user.
-        schema:
-          type: object
-          properties:
-            status: 
-              type: integer
-              example: 200
-            message:
-              type: string
-              example: Logged in
-            data:
-              type: object
-              properties:
-                jwt: 
-                  type: string
-                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-      400:
-        description: User does not exist, the password is invalid or the supplied JSON is not formatted properly.
+    """
+    [POST] Login an existing user
+        Expects: a 'application/json' request with the fields: 'username', 'password'
     """
     redis_client = current_app.config['redis_client']
 

@@ -1,0 +1,173 @@
+openapi: '3.0.3'
+
+info:
+  title: Todos API
+  version: '1.0'
+  description: API for a todo app, [https://github.com/qlamu/to-do-list_vue-flask-redis](https://github.com/qlamu/to-do-list_vue-flask-redis)
+
+paths:
+  /account:
+    post:
+      summary: Create a new user
+      tags:
+        - "Authentication"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Auth"
+      responses:
+        201:
+          description: User created
+        400:
+          description: The user already exists or the supplied JSON is not formatted properly.
+  
+  /login:
+    post:
+      summary: Create a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Auth"
+      responses:
+        200:
+          description: Return a unique JWT associated to the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Logged in
+                  data:
+                    type: object
+                    properties:
+                      jwt: 
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+        400:
+          description: User does not exist, the password is invalid or the supplied JSON is not formatted properly.
+
+  /lists:
+    get:
+      summary: Get all the lists of the current user
+      tags:
+        - Lists
+      security:
+        - JWT: []
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Success
+                  data:
+                    type: object
+                    properties:
+                      lists: 
+                        type: array
+                        items: 
+                          $ref: "#/components/schemas/TodoList"
+    put:
+      summary: Create a new list for the current user
+      tags:
+        - Lists
+      security:
+        - JWT: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  example: List title
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: 
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Created
+                  data:
+                    type: object
+                    properties:
+                      list_id: 
+                        type: integer
+                        example: 1
+        400:
+          description: Supplied request body is not formatted properly.
+
+      
+
+
+components:    
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Auth:
+      type: object
+      required:
+      - username
+      - password
+      properties:
+        username:
+          type: string
+          example: John Doe
+        password:
+          type: string
+          example: h4sh3dp4ss
+
+    TodoList:
+      type: object
+      properties:
+        list_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: My first list
+
+    Todo:
+      type: object
+      properties:
+        description:
+          type: string
+          example: My first todo
+        is_done:
+          type: integer
+          minimum: 0
+          maximum: 1
+          example: 0
