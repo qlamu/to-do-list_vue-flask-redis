@@ -10,8 +10,7 @@ bp_logger = Blueprint("logger", __name__)
 
 
 @bp_logger.route("/log", methods=["GET", "POST"])
-@check_jwt_token
-def logger(user_id: str):
+def logger():
     redis_client = current_app.config["redis_client"]
 
     if request.method == "GET":
@@ -26,13 +25,6 @@ def logger(user_id: str):
             data = LogSchema().load(request.get_json())
         except ValidationError as err:
             return {"status": 400, "message": err.messages}, 400
-
-        user_id_from = redis_client.hget("users", data["username"])
-        if user_id_from != user_id:
-            return {
-                "status": 403,
-                "message": "Adding logs for other users is forbidden",
-            }, 403
 
         redis_client.zadd("logs", mapping={json.dumps(data): time.time()})
 
