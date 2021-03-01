@@ -6,7 +6,7 @@ from api.utils.schemas import ListSchema
 bp_lists = Blueprint("lists", __name__)
 
 
-@bp_lists.route('/lists', methods=['GET', 'PUT'])
+@bp_lists.route('', methods=['GET', 'PUT'])
 @check_jwt_token
 def lists(user_id: int):
     """
@@ -36,7 +36,7 @@ def lists(user_id: int):
     return {'status': 405, 'message': 'Requests to /lists must be GET or PUT'}, 405
 
 
-@bp_lists.route('/lists/<int:list_id>', methods=['GET', 'DELETE', 'PATCH'])
+@bp_lists.route('/<int:list_id>', methods=['GET', 'DELETE', 'PATCH'])
 @check_jwt_token
 def crud_lists(user_id: int, list_id: int):
     """

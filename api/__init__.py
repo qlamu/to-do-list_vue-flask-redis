@@ -6,6 +6,7 @@ import redis
 from api.blueprints.auth import bp_auth
 from api.blueprints.lists import bp_lists
 from api.blueprints.todos import bp_todos
+from api.blueprints.logger import bp_logger
 
 
 def create_app(testing=False):
@@ -13,8 +14,9 @@ def create_app(testing=False):
 
     app = Flask(__name__)
     app.register_blueprint(bp_auth)
-    app.register_blueprint(bp_lists)
-    app.register_blueprint(bp_todos)
+    app.register_blueprint(bp_lists, url_prefix='/lists')
+    app.register_blueprint(bp_todos, url_prefix='/lists/todos')
+    app.register_blueprint(bp_logger, url_prefix='/logger')
 
     if(testing):
         redis_client = fakeredis.FakeStrictRedis(decode_responses=True)

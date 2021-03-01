@@ -5,7 +5,7 @@ from api.utils.schemas import AddTodoSchema, UpdateTodoSchema
 bp_todos = Blueprint("todos", __name__)
 
 
-@bp_todos.route('/lists/todos/<int:list_id>', methods=['GET', 'PUT'])
+@bp_todos.route('/<int:list_id>', methods=['GET', 'PUT'])
 @check_jwt_token
 def todos(user_id: int, list_id: int):
     """
@@ -39,7 +39,7 @@ def todos(user_id: int, list_id: int):
     return {'status': 405, 'message': 'Requests to /lists/todos/<list_id> must be GET or PUT'}, 405
 
 
-@bp_todos.route('/lists/todos/<int:list_id>/<int:todo_id>', methods=['GET', 'DELETE', 'PATCH'])
+@bp_todos.route('/<int:list_id>/<int:todo_id>', methods=['GET', 'DELETE', 'PATCH'])
 @check_jwt_token
 def crud_todos(user_id: int, list_id: int, todo_id: int):
     """
