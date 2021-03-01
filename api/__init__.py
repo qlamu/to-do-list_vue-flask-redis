@@ -23,7 +23,7 @@ def create_app(testing=False):
         app.testing = True
         app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
     else:
-        redis_client = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+        redis_client = redis.Redis(host="redis", port=6379, db=0, decode_responses=True)
     app.config["redis_client"] = redis_client
 
     @app.route("/")
