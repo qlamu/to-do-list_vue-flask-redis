@@ -1,17 +1,10 @@
 from flask.testing import FlaskClient
-from flask import Response
 from fakeredis import FakeStrictRedis
-import string
-import random
+from api.test.utils import create_acc_and_login
 
 
 def login_and_create_list(client: FlaskClient, redis_client: FakeStrictRedis):
-    username = ''.join(random.choices(string.ascii_uppercase + string.digits, k=50))
-    password = ''.join(random.choices(string.ascii_uppercase + string.digits, k=50))
-
-    res = client.post('/account', json={'username': username, 'password': password})
-    res = client.post('/login', json={'username': username, 'password': password})
-    auth_token = res.get_json()['data']['jwt']
+    _, auth_token = create_acc_and_login(client, redis_client)
 
     res = client.put('/lists', headers={'Authorization': 'Bearer ' +
                                         auth_token}, json={'title': 'Test list'})
@@ -20,7 +13,7 @@ def login_and_create_list(client: FlaskClient, redis_client: FakeStrictRedis):
 
 
 def test_authentication(client: FlaskClient):
-    res: Response = client.get('/lists/todos/0')
+    res = client.get('/lists/todos/0')
     assert res.status_code == 401
 
 

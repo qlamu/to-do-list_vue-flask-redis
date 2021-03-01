@@ -1,13 +1,12 @@
 import jwt
 import os
 from flask.testing import FlaskClient
-from flask import Response 
 from fakeredis import FakeStrictRedis
 
 
 def test_register(client: FlaskClient, redis_client: FakeStrictRedis):
     # Empty request
-    res: Response = client.post('/account')
+    res = client.post('/account')
     assert res.status_code == 400
 
     # No data
@@ -25,7 +24,7 @@ def test_register(client: FlaskClient, redis_client: FakeStrictRedis):
 
 
 def test_login(client: FlaskClient, redis_client: FakeStrictRedis):
-    res: Response = client.post('/account', json={'username': 'usr', 'password': 'notsosecret'})
+    res = client.post('/account', json={'username': 'usr', 'password': 'notsosecret'})
 
     # No data
     res = client.post('/login')
