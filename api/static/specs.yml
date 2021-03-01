@@ -59,7 +59,7 @@ paths:
 
   /lists:
     get:
-      summary: Get all the lists of the current user
+      summary: Get all the lists of the authenticated user
       tags:
         - Lists
       security:
@@ -86,7 +86,7 @@ paths:
                         items:
                           $ref: "#/components/schemas/TodoList"
     put:
-      summary: Create a new list for the current user
+      summary: Create a new list for the authenticated user
       tags:
         - Lists
       security:
@@ -126,6 +126,81 @@ paths:
         400:
           description: Supplied request body is not formatted properly.
 
+  /lists/{list_id}:
+    get:
+      summary: Get a list by id
+      tags:
+        - Lists
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: list_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: Created
+                  data:
+                    $ref: "#/components/schemas/TodoList"
+        403:
+          description: Invalid owner for the selected list
+    delete:
+      summary: Delete a list by id
+      tags:
+        - Lists
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: list_id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: OK
+        403:
+          description: Invalid owner for the selected list
+    patch:
+      summary: Update a list by id
+      tags:
+        - Lists
+      security:
+        - JWT: []
+      parameters:
+        - in: path
+          name: list_id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: New list name
+      responses:
+        200:
+          description: OK
+        400:
+          description: Supplied request body is not formatted properly.
 
   /logger:
     get:
@@ -167,7 +242,7 @@ paths:
         201:
           description: Created
         400:
-          description: Bad schema
+          description: Supplied request body is not formatted properly.
 
 components:
   securitySchemes:
