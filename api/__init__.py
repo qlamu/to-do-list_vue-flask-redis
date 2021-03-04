@@ -22,15 +22,14 @@ def create_app(testing=False):
         app.testing = True
         app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
         os.environ["JWT_SECRET"] = "aHR0cHM6Ly9naXRodWIuY29tL3FsYW11L3RvLWRvLWx"
-        os.environ["FLASK_ENV"]= "development"
+        os.environ["FLASK_ENV"] = "development"
     else:
         redis_client = redis.Redis(host="redis", port=6379, db=0, decode_responses=True)
     app.config["redis_client"] = redis_client
 
     @app.route("/")
-    @app.route("/apidocs")
+    @app.route("/doc")
     def index():
         return render_template("swaggerui.html")
 
     return app
-    

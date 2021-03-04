@@ -4,11 +4,13 @@ from flask import Blueprint, current_app, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from marshmallow import ValidationError
 from api.utils.schemas import AuthSchema
+from api.utils.decorators import log_it
 
 bp_auth = Blueprint("auth", __name__)
 
 
 @bp_auth.route("/account", methods=["POST"])
+@log_it
 def register():
     """
     [POST] Register a new user
@@ -34,10 +36,11 @@ def register():
         },
     )
 
-    return {"status": 201, "message": "User created"}, 201
+    return {"status": 201, "message": "OK, User created"}, 201
 
 
 @bp_auth.route("/login", methods=["POST"])
+@log_it
 def login():
     """
     [POST] Login an existing user
@@ -66,4 +69,4 @@ def login():
 
     encoded_jwt = jwt.encode({"user_id": user_id}, os.environ["JWT_SECRET"], algorithm="HS256")
 
-    return {"status": 200, "message": "Logged in", "data": {"jwt": encoded_jwt}}, 200
+    return {"status": 200, "message": "OK, Logged in", "data": {"jwt": encoded_jwt}}, 200

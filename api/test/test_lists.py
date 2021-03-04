@@ -68,8 +68,9 @@ def test_get_specific_list(client: FlaskClient, redis_client: FakeStrictRedis):
 
     json = res.get_json()
     assert "data" in json
-    assert "title" in json["data"]
-    assert json["data"]["title"] == "Test list"
+    assert "list" in json["data"]
+    assert "title" in json["data"]["list"]
+    assert json["data"]["list"]["title"] == "Test list"
 
 
 def test_patch_specific_list(client: FlaskClient, redis_client: FakeStrictRedis):
@@ -95,8 +96,9 @@ def test_patch_specific_list(client: FlaskClient, redis_client: FakeStrictRedis)
     res = client.get(f"/lists/{list_id}", headers={"Authorization": "Bearer " + auth_token})
     json = res.get_json()
     assert "data" in json
-    assert "title" in json["data"]
-    assert json["data"]["title"] == "New Name"
+    assert "list" in json["data"]
+    assert "title" in json["data"]["list"]
+    assert json["data"]["list"]["title"] == "New Name"
 
 
 def test_delete_specific_list(client: FlaskClient, redis_client: FakeStrictRedis):

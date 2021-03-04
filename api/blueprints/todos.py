@@ -1,12 +1,13 @@
 from flask import Blueprint, current_app, request
 from marshmallow import ValidationError
-from api.utils.decorators import check_jwt_token
+from api.utils.decorators import check_jwt_token, log_it
 from api.utils.schemas import AddTodoSchema, UpdateTodoSchema
 
 bp_todos = Blueprint("todos", __name__)
 
 
 @bp_todos.route("/<int:list_id>", methods=["GET", "PUT"])
+@log_it
 @check_jwt_token
 def todos(user_id: int, list_id: int):
     """
@@ -25,7 +26,7 @@ def todos(user_id: int, list_id: int):
             redis_client.hgetall(f"todo:{id}") | {"todo_id": id}
             for id in redis_client.smembers(f"list_content:{list_id}")
         ]
-        return {"status": 200, "message": "OK", "data": {"todos": todos}}, 200
+        return {"status": 200, "message": "OK, Todos queried", "data": {"todos": todos}}, 200
 
     if request.method == "PUT":
         try:
@@ -42,7 +43,7 @@ def todos(user_id: int, list_id: int):
 
         return {
             "status": 201,
-            "message": "Todo created succesfully",
+            "message": "OK, Todo created",
             "data": {"todo_id": new_todo_id},
         }, 201
 
@@ -53,6 +54,7 @@ def todos(user_id: int, list_id: int):
 
 
 @bp_todos.route("/<int:list_id>/<int:todo_id>", methods=["GET", "DELETE", "PATCH"])
+@log_it
 @check_jwt_token
 def crud_todos(user_id: int, list_id: int, todo_id: int):
     """
@@ -76,14 +78,14 @@ def crud_todos(user_id: int, list_id: int, todo_id: int):
     if request.method == "GET":
         return {
             "status": 200,
-            "message": "Success",
-            "data": {"todo": redis_client.hgetall(f"todo:{todo_id}")},
+            "message": "OK, Todo queried",
+            "data": {"todo": redis_client.hgetall(f"todo:{todo_id}") | {"todo_id": todo_id}},
         }, 200
 
     if request.method == "DELETE":
         redis_client.delete(f"todo:{todo_id}")
         redis_client.srem(f"list_content:{list_id}", todo_id)
-        return {"status": 200, "message": "Todo deleted"}, 200
+        return {"status": 200, "message": "OK, Todo deleted"}, 200
 
     if request.method == "PATCH":
         try:
@@ -98,7 +100,7 @@ def crud_todos(user_id: int, list_id: int, todo_id: int):
             new_mapping["is_done"] = data["is_done"]
         redis_client.hset(f"todo:{todo_id}", mapping=new_mapping)
 
-        return {"status": 200, "message": "Todo patched"}, 200
+        return {"status": 200, "message": "OK, Todo patched"}, 200
 
     return {
         "status": 405,
