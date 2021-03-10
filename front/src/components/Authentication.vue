@@ -1,65 +1,104 @@
 <template>
-  <div class="container">
-    <h2>Register</h2>
-    <form class="auth">
-      <input type="text" v-model="username" placeholder="Username" />
-      <input type="password" v-model="password" placeholder="Password"  />
-      <input type="submit" value="Register" v-if="isRegister" v-on:click.prevent="register" />
-      <input type="submit" value="Login" v-else v-on:click.prevent="login" />
+  <div class="content">
+    <h2>{{ showRegister ? "Register" : "Login" }}</h2>
+    <form @submit.prevent="showRegister ? register() : login()" class="auth">
+      <input type="text" v-model="username" placeholder="Username" required />
+      <input
+        type="password"
+        v-model="password"
+        placeholder="Password"
+        required
+      />
+      <button type="submit" v-bind:disabled="!formValidated">
+        <i v-if="isFetchingAPI" class="gg-spinner"></i>
+        <span v-else>{{ showRegister ? "Register" : "Login" }}</span>
+      </button>
     </form>
     <p id="swapRegister" v-on:click="toggleRegisterView">
       {{
-        isRegister
+        showRegister
           ? "Already have an account ? Login"
           : "Don't have an account ? Register"
       }}
     </p>
+    <div v-if="errorMessage" class="error-alert">{{ errorMessage }}</div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+<script>
 import AuthService from "@/services/AuthService";
 
-@Component
-export default class Authentication extends Vue {
-  private isRegister = true;
-  private username = "";
-  private password = "";
+export default {
+  name: "Authentication",
+  props: {
+    showRegister: Boolean,
+  },
+  data() {
+    return {
+      username: "",
+      password: "",
+      isFetchingAPI: false,
+      errorMessage: "",
+    };
+  },
+  computed: {
+    formValidated: function() {
+      return this.username != "" && this.password != "";
+    }
+  },
+  methods: {
+    register: function() {
+      this.isFetchingAPI = true;
+      this.errorMessage = "";
+      console.log("register");
+      const resp = AuthService.register(this.username, this.password);
+      resp
+        .then((d) => {
+          return d.json();
+        })
+        .catch((err) => err.response.data.message)
+        .finally(() => (this.isFetchingAPI = false));
+    },
 
-  register() {
-    console.log("register");
-    const resp = AuthService.register(this.username, this.password);
-    resp.then((d) => console.log(d));
-  }
+    login: function() {
+      this.isFetchingAPI = true;
+      this.errorMessage = "";
+      console.log("login");
+      const resp = AuthService.login(this.username, this.password);
+      resp
+        .then((d) => {
+          console.log(d);
+        })
+        .catch((err) => (this.errorMessage = err.response.data.message))
+        .finally(() => (this.isFetchingAPI = false));
+    },
 
-  login() {
-    console.log("login");
-    const resp = AuthService.login(this.username, this.password);
-    resp.then((d) => console.log(d));
-  }
-
-  toggleRegisterView() {
-    this.isRegister = !this.isRegister;
-  }
-}
+    toggleRegisterView: function() {
+      this.$router.push(this.showRegister ? "/login" : "/register");
+    },
+  },
+};
 </script>
 
 <style lang="scss">
 @import "@/assets/variables";
+@import "@/assets/icons";
 
 .auth {
   background-color: $bg-1;
   color: $fg-0;
   border-radius: 3px;
   display: inline-flex;
+  flex-flow: row wrap;
   padding: 10px;
 
-  * {
+  input,
+  button {
     margin: 10px;
   }
 
-  input[type=text], input[type=password] {
+  input[type="text"],
+  input[type="password"] {
     background-color: $bg-2;
     color: $fg-0;
     border: 1px solid $bg-3;

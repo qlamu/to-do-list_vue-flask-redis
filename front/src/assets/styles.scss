@@ -1,27 +1,82 @@
 @import "@/assets/variables";
 
+@font-face {
+  font-family: Barlow;
+  src: url("./fonts/Barlow-Light.woff2");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Barlow;
+  src: url("./fonts/Barlow-Regular.woff2");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Barlow;
+  src: url("./fonts/Barlow-Medium.woff2");
+  font-weight: 500;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
-    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-family: Barlow, sans-serif;
   color: $fg-0;
   background-color: $bg-0;
   font-size: 1rem;
+  padding: 0;
+  margin: 0;
 }
 
-button, input[type=submit] {
+button {
   background-color: $accent;
   color: $bg-0;
   border: none;
   border-radius: 3px;
   cursor: pointer;
+  padding: 10px;
 }
 
-h1, h2 {
+button:disabled,
+button[disabled]{
+  background-color: $bg-3;
+}
+
+h1,
+h2 {
   color: $fg-1;
+  font-weight: 300;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+#app {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  grid-auto-rows: minmax(10px, auto);
+  grid-template-areas: "sidenav content";
+  grid-gap: 20px;
+}
+
+.sidenav {
+  background-color: $bg-1;
+}
+
+.content {
+  margin: auto;
+}
+
+@media (max-width: 480px) {
+  #app {
+    display: grid;
+    grid-template-columns: 1px 1fr;
+    grid-auto-rows: minmax(10px, auto);
+    grid-template-areas: "g-left g-middle";
+    grid-gap: 20px;
+  }
+}
+
+.error-alert {
+  border: none;
+  border-radius: 3px;
+  padding: 10px;
+  width: 100%;
+  background-color: rgb(191, 97, 106);
 }
