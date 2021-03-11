@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
   },
   {
     path: '/about',
@@ -26,7 +26,7 @@ const routes = [
     props: { showRegister: false }
   },
   {
-    path: '/register',
+    path: '/signup',
     name: 'Register',
     component: Authentication,
     props: { showRegister: true }

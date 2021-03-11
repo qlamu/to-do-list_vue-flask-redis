@@ -1,9 +1,10 @@
 import axios from "axios";
+import { server } from "@/services/config";
 
 export default new (class AuthService {
   async register(username, password) {
     const resp = axios.post(
-      "http://localhost:5000/account",
+      `${server}/account`,
       {
         username: username,
         password: password,
@@ -15,7 +16,7 @@ export default new (class AuthService {
   }
 
   async login(username, password) {
-    const resp = axios.post("http://localhost:5000/login", {
+    const resp = axios.post(`${server}/login`, {
       username: username,
       password: password,
     });

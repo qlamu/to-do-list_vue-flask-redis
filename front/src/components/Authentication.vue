@@ -1,6 +1,6 @@
 <template>
-  <div class="content">
-    <h2>{{ showRegister ? "Register" : "Login" }}</h2>
+  <div id="authComponent">
+    <h1>{{ showRegister ? "Register" : "Login" }}</h1>
     <form @submit.prevent="showRegister ? register() : login()" class="auth">
       <input type="text" v-model="username" placeholder="Username" required />
       <input
@@ -22,6 +22,7 @@
       }}
     </p>
     <div v-if="errorMessage" class="error-alert">{{ errorMessage }}</div>
+    <div v-if="successMessage" class="success-alert">{{ successMessage }}</div>
   </div>
 </template>
 
@@ -39,6 +40,7 @@ export default {
       password: "",
       isFetchingAPI: false,
       errorMessage: "",
+      successMessage: ""
     };
   },
   computed: {
@@ -50,31 +52,29 @@ export default {
     register: function() {
       this.isFetchingAPI = true;
       this.errorMessage = "";
+      this.successMessage = "";
       console.log("register");
       const resp = AuthService.register(this.username, this.password);
       resp
-        .then((d) => {
-          return d.json();
-        })
-        .catch((err) => err.response.data.message)
+        .then((suc) => (this.successMessage = suc.message))
+        .catch((err) => (this.errorMessage = err.response.data.message))
         .finally(() => (this.isFetchingAPI = false));
     },
 
     login: function() {
       this.isFetchingAPI = true;
       this.errorMessage = "";
+      this.successMessage = "";
       console.log("login");
       const resp = AuthService.login(this.username, this.password);
       resp
-        .then((d) => {
-          console.log(d);
-        })
+        .then(() => this.$router.push("/"))
         .catch((err) => (this.errorMessage = err.response.data.message))
         .finally(() => (this.isFetchingAPI = false));
     },
 
     toggleRegisterView: function() {
-      this.$router.push(this.showRegister ? "/login" : "/register");
+      this.$router.push(this.showRegister ? "/login" : "/signup");
     },
   },
 };
@@ -83,6 +83,10 @@ export default {
 <style lang="scss">
 @import "@/assets/variables";
 @import "@/assets/icons";
+
+#authComponent {
+  margin: auto;
+}
 
 .auth {
   background-color: $bg-1;
