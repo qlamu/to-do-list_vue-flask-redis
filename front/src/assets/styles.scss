@@ -49,8 +49,7 @@ h2 {
 
 .grid {
   display: grid;
-  grid-template-columns: 333px 1fr;
-  grid-auto-rows: minmax(100px, auto);
+  grid-template-columns: 2fr 6fr;
   grid-template-areas: "sidenav content";
   grid-gap: 20px;
   width: 100%;
@@ -60,10 +59,17 @@ h2 {
   grid-area: sidenav;
   background-color: $bg-1;
   height: 100vh;
+  overflow-y: auto;
 
   h1 {
     margin: 2rem 0 1rem 1rem;
-    color: $accent;
+    color: $fg-1;
+    display: flex;
+    align-items: first baseline;
+
+    i {
+      margin-left: 1rem;
+    }
   }
 }
 
@@ -90,31 +96,19 @@ h2 {
   border-radius: 3px;
   padding: 10px;
   width: 100%;
+  margin: 1rem 0;
+  box-sizing: border-box;
 }
 
 .error-alert {
   @extend %alert;
-  background-color: rgb(191, 97, 106);
+  background-color: $red;
 }
 
 .success-alert {
   @extend %alert;
-  background-color: rgb(163, 190, 140);
+  background-color: $green;
   color: $bg-0;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-ul li {
-  padding: 10px;
-}
-
-ul li:hover {
-  background-color: $bg-2;
-  cursor: pointer;
 }
 
 kbd {
@@ -123,4 +117,18 @@ kbd {
   border-radius: 3px;
   font-size: 0.7rem;
   color: $fg-2;
+}
+
+
+.scale-enter-active, .scale-leave-active {
+  transform: scaleY(1);
+  transform-origin: top;
+  transition: all 500ms ease;
+  max-height: 800px;
+}
+.scale-enter, .scale-leave-to {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: all 500ms ease;
+  max-height: 0;
 }

@@ -3,7 +3,11 @@
     <TodoListsSidenav class="sidenav" />
     <div class="content">
       <h1>Todo list manager</h1>
-      <img src="@/assets/images/undraw_No_data_re_kwbl.svg" alt="" width="200rem">
+      <img
+        src="@/assets/images/undraw_No_data_re_kwbl.svg"
+        alt=""
+        width="200rem"
+      />
     </div>
   </div>
 </template>
@@ -12,16 +16,9 @@
 import TodoListsSidenav from "@/components/TodoListsSidenav";
 
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    TodoListsSidenav
+    TodoListsSidenav,
   },
-  beforeRouteEnter (to, from, next) {
-    console.log("HERE WE GO");
-    console.log(to);
-    console.log(from);
-    console.log(next);
-    next();
-  },
-}
+};
 </script>

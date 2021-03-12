@@ -8,11 +8,7 @@ export default new (class ListsService {
   }
 
   async createList(listTitle) {
-    const resp = axios.put(
-      `${server}/lists`,
-      { title: listTitle },
-      { headers: { "Content-Type": "application/json" } }
-    );
+    const resp = axios.put(`${server}/lists`, { title: listTitle });
     return (await resp).data;
   }
 
@@ -21,17 +17,13 @@ export default new (class ListsService {
     return (await resp).data;
   }
 
-  async patchList(listID, newTitle) {
-    const resp = axios.patch(
-      `${server}/lists/${listID}`,
-      { title: newTitle },
-      { headers: { "Content-Type": "application/json" } }
-    );
+  async deleteList(listID) {
+    const resp = axios.delete(`${server}/lists/${listID}`);
     return (await resp).data;
   }
 
-  async deleteList(listID) {
-    const resp = axios.delete(`${server}/lists/${listID}`);
+  async patchList(listID, newTitle) {
+    const resp = axios.patch(`${server}/lists/${listID}`, { title: newTitle });
     return (await resp).data;
   }
 })();

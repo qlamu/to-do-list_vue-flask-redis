@@ -40,13 +40,13 @@ export default {
       password: "",
       isFetchingAPI: false,
       errorMessage: "",
-      successMessage: ""
+      successMessage: "",
     };
   },
   computed: {
     formValidated: function() {
       return this.username != "" && this.password != "";
-    }
+    },
   },
   methods: {
     register: function() {
@@ -56,7 +56,10 @@ export default {
       console.log("register");
       const resp = AuthService.register(this.username, this.password);
       resp
-        .then((suc) => (this.successMessage = suc.message))
+        .then((suc) => {
+          this.successMessage = suc.message;
+          this.$router.push("/login");
+        })
         .catch((err) => (this.errorMessage = err.response.data.message))
         .finally(() => (this.isFetchingAPI = false));
     },

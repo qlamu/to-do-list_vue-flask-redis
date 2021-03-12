@@ -3,14 +3,10 @@ import { server } from "@/services/config";
 
 export default new (class AuthService {
   async register(username, password) {
-    const resp = axios.post(
-      `${server}/account`,
-      {
-        username: username,
-        password: password,
-      },
-      { headers: { "Content-Type": "application/json" } }
-    );
+    const resp = axios.post(`${server}/account`, {
+      username: username,
+      password: password,
+    });
 
     return (await resp).data;
   }
