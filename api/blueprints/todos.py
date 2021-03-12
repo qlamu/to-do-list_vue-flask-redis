@@ -19,7 +19,7 @@ def todos(user_id: int, list_id: int):
     redis_client = current_app.config["redis_client"]
 
     if not redis_client.sismember(f"lists:{user_id}", list_id):
-        return {"status": 403, "message": "Invalid owner for the selected list"}, 401
+        return {"status": 403, "message": "Invalid owner for the selected list"}, 403
 
     if request.method == "GET":
         todos = [
@@ -73,7 +73,7 @@ def crud_todos(user_id: int, list_id: int, todo_id: int):
         return {
             "status": 403,
             "message": "Invalid owner for the selected list or Todo does not exist",
-        }, 401
+        }, 403
 
     if request.method == "GET":
         return {

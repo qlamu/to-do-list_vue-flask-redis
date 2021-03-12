@@ -9,9 +9,9 @@ Deploy with `docker-compose -f docker-compose.yml up`, the JWT secret can be set
 
 The API is vanilla Flask app with the dependencies kept as short a possible, it is divided like so:
 - **blueprints**: Each blueprint correspond to a family of routes (`/lists`, `/todos`, etc.).
-- **static** & **templates**: This is only used to serve Swagger UI (v44) that act as an interaction documentation (route `/doc`).
-- **test**: A suite of tests running with `pytest`, covering most of the use case of the whole API.
-- **utils**: Contains the decorators (to request authentication) and the schemas used to validate the input to the API routes.
+- **static** & **templates**: This is only used to serve Swagger UI (v44) that act as an interactive documentation (route `/doc`).
+- **test**: A suite of tests running with `pytest`, covering most of the use cases of the API.
+- **utils**: Contains the decorators (to request authentication, auto logs) and the `marshmallow` schemas used to validate the input to some routes.
 
 ### Database structure
 
