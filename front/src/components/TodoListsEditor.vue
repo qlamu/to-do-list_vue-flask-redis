@@ -234,21 +234,5 @@ ul li:not(:last-child) {
   width: 100%;
   background: $bg-1;
   display: flex;
-
-  input[type="text"] {
-    background-color: $bg-1;
-    color: $fg-0;
-    border-width: 1px 0 1px 0;
-    border-color: $bg-3;
-    border-style: solid;
-    padding: 10px;
-    box-sizing: border-box;
-    flex: 1;
-  }
-
-  input:focus {
-    outline: none;
-    border-color: $accent;
-  }
 }
 </style>
