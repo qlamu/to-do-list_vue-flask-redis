@@ -91,13 +91,24 @@ textarea:focus {
 }
 
 @media (max-width: 480px) {
-  #app {
-    display: grid;
-    grid-template-columns: 1px 1fr;
-    grid-auto-rows: minmax(10px, auto);
-    grid-template-areas: "g-left g-middle";
-    grid-gap: 20px;
+  .grid {
+    grid-template-columns: 0 1fr;
+    grid-template-areas: "sidenav content";
   }
+
+  .mobileSwap {
+    grid-template-columns: 1fr 0;
+  }
+
+  .mobileNav {
+    position: fixed;
+    padding: 1rem 1.5rem;
+    mask: url("../assets/images/back_icon.svg") no-repeat center;
+    -webkit-mask: url("../assets/images/back_icon.svg") no-repeat center;
+    background-color: $accent-sec;
+    cursor: pointer;
+  }
+
 }
 
 %alert {
@@ -221,7 +232,7 @@ ul li:hover {
   @extend %actionBtn;
   mask: url("../assets/images/todo_checked.svg") no-repeat center;
   -webkit-mask: url("../assets/images/todo_checked.svg") no-repeat center;
-  background-color: #81a1c1;
+  background-color: $accent-sec;
 }
 
 .undone-todo {
@@ -232,7 +243,7 @@ ul li:hover {
 }
 
 .undone-todo:hover {
-  background-color: #81a1c1;
+  background-color: $accent-sec;
 }
 
 /* --- Transitions --------------------------------------------------------- */

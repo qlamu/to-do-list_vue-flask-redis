@@ -1,5 +1,6 @@
 <template>
-  <div class="grid">
+  <div class="grid" v-bind:class="{ mobileSwap: $route.path == '/' }">
+    <router-link class="mobileNav" to="/" v-show="$route.path != '/'" />
     <TodoListsSidenav class="sidenav" />
     <TodoListsEditor class="content" />
   </div>
@@ -13,7 +14,7 @@ export default {
   name: "Home",
   components: {
     TodoListsSidenav,
-    TodoListsEditor
+    TodoListsEditor,
   },
 };
 </script>

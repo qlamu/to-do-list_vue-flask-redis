@@ -94,6 +94,8 @@ export default {
   },
   methods: {
     fetchTodoFromRoute() {
+      this.todos = [];
+      this.list = null;
       if (this.$route.params.list_id) {
         this.isFetchingAPI = true;
         this.errorMessage = "";
