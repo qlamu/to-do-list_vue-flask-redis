@@ -23,5 +23,11 @@ services:
       timeout: 3s
       retries: 10
 
+  front:
+    container_name: qlNGINX
+    build: ./front
+    ports: 
+      - 8080:80
+
 volumes:
   redis_database:

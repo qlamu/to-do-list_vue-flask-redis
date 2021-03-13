@@ -2,6 +2,7 @@ import os
 import redis
 import fakeredis
 from flask import Flask, render_template
+from flask_cors import CORS
 
 from api.blueprints.auth import bp_auth
 from api.blueprints.lists import bp_lists
@@ -12,6 +13,7 @@ from api.blueprints.logger import bp_logger
 def create_app(testing=False):
 
     app = Flask(__name__)
+    CORS(app)
     app.register_blueprint(bp_auth)
     app.register_blueprint(bp_lists, url_prefix="/lists")
     app.register_blueprint(bp_todos, url_prefix="/lists/todos")

@@ -1,9 +1,8 @@
 import axios from "axios";
-import { server } from "@/services/config";
 
 export default new (class AuthService {
   async register(username, password) {
-    const resp = axios.post(`${server}/account`, {
+    const resp = axios.post(`${process.env.VUE_APP_SERVER}/account`, {
       username: username,
       password: password,
     });
@@ -12,7 +11,7 @@ export default new (class AuthService {
   }
 
   async login(username, password) {
-    const resp = axios.post(`${server}/login`, {
+    const resp = axios.post(`${process.env.VUE_APP_SERVER}/login`, {
       username: username,
       password: password,
     });
