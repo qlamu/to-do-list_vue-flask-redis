@@ -12,12 +12,6 @@
   font-weight: 400;
 }
 
-@font-face {
-  font-family: Barlow;
-  src: url("./fonts/Barlow-Medium.woff2");
-  font-weight: 500;
-}
-
 body {
   font-family: Barlow, sans-serif;
   color: $fg-0;
@@ -41,17 +35,35 @@ button[disabled] {
   background-color: $bg-3;
 }
 
-h1,
-h2 {
+h1 {
   color: $fg-1;
   font-weight: 300;
+  margin: 2rem 0 1rem 1rem;
+  display: flex;
+  align-items: first baseline;
+
+  i {
+    margin-left: 1rem;
+  }
+}
+
+textarea {
+  border: none;
+  background-color: $bg-2;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
+}
+
+textarea:focus {
+  outline: none;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 2fr 6fr;
   grid-template-areas: "sidenav content";
-  grid-gap: 20px;
   width: 100%;
 }
 
@@ -62,7 +74,6 @@ h2 {
   overflow-y: auto;
 
   h1 {
-    margin: 2rem 0 1rem 1rem;
     color: $fg-1;
     display: flex;
     align-items: first baseline;
@@ -75,10 +86,8 @@ h2 {
 
 .content {
   grid-area: content;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 @media (max-width: 480px) {
@@ -119,14 +128,123 @@ kbd {
   color: $fg-2;
 }
 
+ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-.scale-enter-active, .scale-leave-active {
+ul li:hover {
+  background-color: $bg-2;
+
+  #editBtn,
+  #deleteBtn {
+    visibility: visible;
+  }
+}
+
+.list-item {
+  padding-left: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding: 5px 10px;
+
+  span {
+    flex-grow: 1;
+  }
+
+  button {
+    border-radius: 0;
+    margin: 4px;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.create-item-button {
+  width: 100%;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+
+  div {
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+    flex-direction: column;
+  }
+}
+
+/* --- Custom list buttons ------------------------------------------------- */
+%actionBtn {
+  mask-size: contain !important;
+  background-color: $fg-2;
+}
+
+#editBtn {
+  @extend %actionBtn;
+  mask: url("../assets/images/pen_icon.svg") no-repeat center;
+  -webkit-mask: url("../assets/images/pen_icon.svg") no-repeat center;
+  visibility: hidden;
+}
+
+#editBtn:hover {
+  background-color: $accent;
+}
+
+#deleteBtn {
+  @extend %actionBtn;
+  mask: url("../assets/images/trash_icon.svg") no-repeat center;
+  -webkit-mask: url("../assets/images/trash_icon.svg") no-repeat center;
+  visibility: hidden;
+}
+
+#deleteBtn:hover {
+  background-color: $red;
+}
+
+#confirmBtn {
+  @extend %actionBtn;
+  mask: url("../assets/images/check_icon.svg") no-repeat center;
+  -webkit-mask: url("../assets/images/check_icon.svg") no-repeat center;
+}
+
+#confirmBtn:hover {
+  background-color: $green;
+}
+
+.done-todo {
+  @extend %actionBtn;
+  mask: url("../assets/images/todo_checked.svg") no-repeat center;
+  -webkit-mask: url("../assets/images/todo_checked.svg") no-repeat center;
+  background-color: #81a1c1;
+}
+
+.undone-todo {
+  @extend %actionBtn;
+  mask: url("../assets/images/todo_unchecked.svg") no-repeat center;
+  -webkit-mask: url("../assets/images/todo_unchecked.svg") no-repeat center;
+  visibility: visible;
+}
+
+.undone-todo:hover {
+  background-color: #81a1c1;
+}
+
+/* --- Transitions --------------------------------------------------------- */
+.scale-enter-active,
+.scale-leave-active {
   transform: scaleY(1);
   transform-origin: top;
   transition: all 500ms ease;
   max-height: 800px;
 }
-.scale-enter, .scale-leave-to {
+.scale-enter,
+.scale-leave-to {
   transform: scaleY(0);
   transform-origin: top;
   transition: all 500ms ease;

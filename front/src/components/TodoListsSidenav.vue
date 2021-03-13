@@ -14,7 +14,11 @@
       v-on:keydown.ctrl.enter="createList"
     />
     <transition name="scale">
-      <button v-if="canCreate" v-on:click="createList" class="createListButton">
+      <button
+        v-if="canCreate"
+        v-on:click="createList"
+        class="create-item-button"
+      >
         <i v-if="isFetchingAPI" class="gg-spinner"></i>
         <div v-else>
           <span>Create {{ searchContent }}</span>
@@ -26,23 +30,20 @@
       <li
         v-for="list in sortedLists"
         :key="list.list_id"
-        @click="$router.push('/' + list.list_id)"
+        @click="changeSelection(list.list_id)"
       >
         <div
           v-if="list.list_id != editedListID"
+          class="list-item"
           v-bind:class="{ active: $route.params.list_id == list.list_id }"
         >
           <span>{{ list.title }}</span>
-          <button id="editBtn" @click="toggleEdit(list.list_id)">
-            <i class="gg-pen"></i>
-          </button>
-          <button id="deleteBtn" @click="deleteList(list.list_id)">
-            <i class="gg-trash-empty"></i>
-          </button>
+          <button id="editBtn" @click="toggleEdit(list.list_id)"></button>
+          <button id="deleteBtn" @click="deleteList(list.list_id)"></button>
         </div>
-        <div v-else>
-          <input type="text" v-model="editedList.title" />
-          <button id="confirmBtn" @click="patchEditedList">V</button>
+        <div v-else class="list-item">
+          <textarea type="text" v-model="editedList.title" v-on:keydown.ctrl.enter="patchEditedList"/>
+          <button id="confirmBtn" @click="patchEditedList"></button>
         </div>
       </li>
     </ul>
@@ -56,8 +57,8 @@ export default {
   name: "TodoLists",
   data() {
     return {
-      searchContent: "",
       lists: [],
+      searchContent: "",
       isFetchingAPI: false,
       errorMessage: "",
       editedListID: null,
@@ -150,13 +151,16 @@ export default {
 
       this.editedListID = null;
     },
+
+    changeSelection(listID) {
+      if (this.$route.params.list_id != listID) this.$router.push("/" + listID);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/assets/variables";
-@import "@/assets/icons";
 
 input[type="text"] {
   background-color: $bg-2;
@@ -172,88 +176,6 @@ input[type="text"] {
 input:focus {
   outline: none;
   border-color: $accent;
-}
-
-.createListButton {
-  width: 100%;
-  border-radius: 0;
-  display: flex;
-  justify-content: center;
-
-  div {
-    display: flex;
-    flex-wrap: wrap;
-    text-align: center;
-    flex-direction: column;
-  }
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-ul li div {
-  padding-left: 0.8rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-  padding: 10px;
-
-  span {
-    flex-grow: 1;
-  }
-
-  button {
-    background: transparent;
-    color: $fg-2;
-    border-radius: 0;
-    align-self: stretch;
-    margin: 4px;
-  }
-
-  button:hover {
-    background: $bg-3;
-    color: $fg-0;
-  }
-}
-ul li:hover {
-  background-color: $bg-2;
-  cursor: pointer;
-}
-
-#editBtn {
-  mask: url("../assets/images/pen_icon.svg") no-repeat center;
-  -webkit-mask: url("../assets/images/pen_icon.svg") no-repeat center;
-  mask-size: contain;
-  background-color: $fg-2;
-}
-
-#editBtn:hover {
-  background-color: $accent;
-}
-
-#deleteBtn {
-  mask: url("../assets/images/trash_icon.svg") no-repeat center;
-  -webkit-mask: url("../assets/images/trash_icon.svg") no-repeat center;
-  mask-size: contain;
-  background-color: $fg-2;
-}
-
-#deleteBtn:hover {
-  background-color: $red;
-}
-
-#confirmBtn {
-  mask: url("../assets/images/check_icon.svg") no-repeat center;
-  -webkit-mask: url("../assets/images/check_icon.svg") no-repeat center;
-  mask-size: contain;
-  background-color: $fg-2;
-}
-
-#confirmBtn:hover {
-  background-color: $accent;
 }
 
 .active {

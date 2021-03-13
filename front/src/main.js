@@ -10,7 +10,7 @@ import "@/assets/styles.scss";
 axios.defaults.headers.common = {
   "Content-Type": "application/json",
 };
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 10000;
 axios.interceptors.response.use(
   function(response) {
     return response;

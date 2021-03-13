@@ -7,5 +7,6 @@
 <style lang="scss">
 #app {
   display: flex;
+  min-height: 100vh;
 }
 </style>
