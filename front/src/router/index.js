@@ -1,45 +1,50 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import Authentication from '@/components/Authentication'
-import Logs from '@/components/Logs'
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import NotFound from "../views/NotFound.vue";
+import Authentication from "@/components/Authentication";
+import Logs from "@/components/Logs";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/login',
-    name: 'Login',
+    path: "/login",
+    name: "Login",
     component: Authentication,
-    props: { showRegister: false }
+    props: { showRegister: false },
   },
   {
-    path: '/signup',
-    name: 'Register',
+    path: "/signup",
+    name: "Register",
     component: Authentication,
-    props: { showRegister: true }
+    props: { showRegister: true },
   },
   {
-    path: '/logs',
-    name: 'Logs',
+    path: "/logs",
+    name: "Logs",
     component: Logs,
   },
   {
-    path: '/:list_id',
-    name: 'Editor',
+    path: "/:list_id",
+    name: "Editor",
     component: Home,
   },
   {
-    path: '/',
-    name: 'Home',
+    path: "/",
+    name: "Home",
     component: Home,
   },
-]
+  { 
+    path: "*", 
+    component: NotFound 
+  },
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;
