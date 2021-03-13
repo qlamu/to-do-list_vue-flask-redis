@@ -4,22 +4,28 @@
       <span>Logs</span>
       <i v-if="isFetchingAPI" class="gg-spinner"></i>
     </h1>
-    <table>
-      <tr>
-        <th>Username</th>
-        <th>Status</th>
-        <th>Message</th>
-      </tr>
-      <tr
-        v-for="(log, index) in logs"
-        :key="index"
-       
-      >
-        <td  v-bind:class="[ log.status >= 199 && log.status < 300 ? 'borderGreen' : 'borderRed']">{{ log.username }}</td>
-        <td>{{ log.status }}</td>
-        <td>{{ log.message }}</td>
-      </tr>
-    </table>
+    <div id="logs">
+      <table>
+        <tr>
+          <th>Username</th>
+          <th>Status</th>
+          <th>Message</th>
+        </tr>
+        <tr v-for="(log, index) in logs" :key="index">
+          <td
+            v-bind:class="[
+              log.status >= 199 && log.status < 300
+                ? 'borderGreen'
+                : 'borderRed',
+            ]"
+          >
+            {{ log.username }}
+          </td>
+          <td>{{ log.status }}</td>
+          <td>{{ log.message }}</td>
+        </tr>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -57,14 +63,35 @@ export default {
 
 <style lang="scss">
 @import "@/assets/variables";
-table {
-  width: 100%;
+@import "@/assets/icons";
+
+#logs {
+  background-color: $bg-1;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 3px;
 }
 
-tr,
-td {
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+tr {
   padding: 1rem;
   text-align: left;
+}
+
+tr:hover {
+  background: $bg-2;
+}
+
+tr:not(:last-child) {
+  border-bottom: 1px solid $bg-3;
+}
+
+td {
+  padding: 0.5rem;
 }
 
 .borderGreen {

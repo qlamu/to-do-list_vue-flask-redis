@@ -212,6 +212,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/variables";
+@import "@/assets/icons";
 
 .list-item {
   margin-top: 0;
