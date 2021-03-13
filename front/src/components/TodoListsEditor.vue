@@ -18,7 +18,7 @@
     </div>
     <transition name="scale">
       <button
-        v-if="searchContent"
+        v-if="searchContent && list"
         v-on:click="createTodo"
         class="create-item-button"
       >
@@ -51,7 +51,11 @@
           </div>
         </div>
         <div v-else class="list-item">
-          <textarea type="text" v-model="editedTodo.description" v-on:keydown.ctrl.enter="patchEditedTodo" />
+          <textarea
+            type="text"
+            v-model="editedTodo.description"
+            v-on:keydown.ctrl.enter="patchEditedTodo"
+          />
           <button id="confirmBtn" @click="patchEditedTodo"></button>
         </div>
       </li>
@@ -65,6 +69,9 @@ import TodosService from "@/services/TodosService";
 
 export default {
   name: "TodoListsEditor",
+  props: {
+    refresh: Boolean,
+  },
   data() {
     return {
       list: null,
@@ -76,7 +83,8 @@ export default {
     };
   },
   created() {
-    this.fetchTodoFromRoute();
+    this.fetchListInfos();
+    this.fetchTodos();
   },
   computed: {
     sortedTodos: function() {
@@ -93,13 +101,12 @@ export default {
     },
   },
   methods: {
-    fetchTodoFromRoute() {
-      this.todos = [];
+    fetchListInfos() {
       this.list = null;
       if (this.$route.params.list_id) {
         this.isFetchingAPI = true;
         this.errorMessage = "";
-        let resp = ListsService.getList(this.$route.params.list_id);
+        const resp = ListsService.getList(this.$route.params.list_id);
         resp
           .then((suc) => (this.list = suc.data.list))
           .catch(
@@ -108,8 +115,13 @@ export default {
                 err.response?.data.message || "Error: Could not reach server")
           )
           .finally(() => (this.isFetchingAPI = false));
+      }
+    },
 
-        resp = TodosService.getTodos(this.$route.params.list_id);
+    fetchTodos() {
+      this.todos = [];
+      if (this.$route.params.list_id) {
+        const resp = TodosService.getTodos(this.$route.params.list_id);
         resp
           .then((suc) => (this.todos = suc.data.todos))
           .catch(
@@ -122,24 +134,29 @@ export default {
     },
 
     createTodo() {
-      this.isFetchingAPI = true;
-      this.errorMessage = "";
-      const resp = TodosService.createTodo(this.list.list_id, this.searchContent);
-      resp
-        .then((suc) => {
-          this.todos.push({
-            description: this.searchContent,
-            is_done: 0,
-            todo_id: suc.data.todo_id,
-          });
-          this.searchContent = "";
-        })
-        .catch(
-          (err) =>
-            (this.errorMessage =
-              err.response?.data.message || "Error: Could not reach server")
-        )
-        .finally(() => (this.isFetchingAPI = false));
+      if (this.list) {
+        this.isFetchingAPI = true;
+        this.errorMessage = "";
+        const resp = TodosService.createTodo(
+          this.list.list_id,
+          this.searchContent
+        );
+        resp
+          .then((suc) => {
+            this.todos.push({
+              description: this.searchContent,
+              is_done: 0,
+              todo_id: suc.data.todo_id,
+            });
+            this.searchContent = "";
+          })
+          .catch(
+            (err) =>
+              (this.errorMessage =
+                err.response?.data.message || "Error: Could not reach server")
+          )
+          .finally(() => (this.isFetchingAPI = false));
+      }
     },
 
     deleteTodo(todoID) {
@@ -195,7 +212,7 @@ export default {
         .catch((err) => {
           this.errorMessage =
             err.response?.data.message || "Error: Could not reach server";
-            patchedTodo.is_done = patchedTodo.is_done == "1" ? "0" : "1"; // Revert
+          patchedTodo.is_done = patchedTodo.is_done == "1" ? "0" : "1"; // Revert
         })
         .finally(() => (this.isFetchingAPI = false));
     },
@@ -203,7 +220,14 @@ export default {
   watch: {
     "$route.params.list_id": {
       handler: function() {
-        this.fetchTodoFromRoute();
+        this.fetchListInfos();
+        this.fetchTodos();
+      },
+    },
+
+    refresh: {
+      handler() {
+        this.fetchListInfos();
       },
     },
   },

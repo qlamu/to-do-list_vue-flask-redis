@@ -151,6 +151,7 @@ export default {
         this.editedList.title
       );
       resp
+        .then(() => this.$emit("refreshTodosPanel"))
         .catch((err) => {
           this.errorMessage =
             err.response?.data.message || "Error: Could not reach server";

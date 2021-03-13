@@ -1,8 +1,8 @@
 <template>
   <div class="grid" v-bind:class="{ mobileSwap: $route.path == '/' }">
     <router-link class="mobileNav" to="/" v-show="$route.path != '/'" />
-    <TodoListsSidenav class="sidenav" />
-    <TodoListsEditor class="content" />
+    <TodoListsSidenav v-on:refreshTodosPanel="refreshProp = !refreshProp" class="sidenav" />
+    <TodoListsEditor class="content" :refresh="refreshProp" />
   </div>
 </template>
 
@@ -16,5 +16,10 @@ export default {
     TodoListsSidenav,
     TodoListsEditor,
   },
+  data() {
+    return {
+      refreshProp: false
+    }
+  }
 };
 </script>
