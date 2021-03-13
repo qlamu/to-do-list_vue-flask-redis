@@ -2,7 +2,6 @@ import axios from "axios";
 
 export default new (class ListsService {
   async getLists() {
-    console.log(`${process.env.VUE_APP_SERVER}/lists`);
     const resp = axios.get(`${process.env.VUE_APP_SERVER}/lists`);
     return (await resp).data;
   }

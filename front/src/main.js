@@ -17,7 +17,6 @@ axios.interceptors.response.use(
   },
   function(error) {
     if (error.response?.status == 401) {
-      console.log("LOGGED OUT");
       axios.defaults.headers.common = {
         Authorization: "",
       };
