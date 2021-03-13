@@ -98,9 +98,21 @@ textarea:focus {
     color: $fg-1;
     display: flex;
     align-items: first baseline;
+    justify-content: space-between;
 
-    i {
-      margin-left: 1rem;
+    div {
+      display: flex;
+      align-items: first baseline;
+
+      i {
+        margin-left: 1rem;
+      }
+
+    }
+
+    button {
+      align-self: normal;
+      margin-right: 0.5rem;
     }
   }
 }
@@ -260,10 +272,19 @@ ul li:hover {
   @extend %actionBtn;
   mask: url("../assets/images/todo_unchecked.svg") no-repeat center;
   -webkit-mask: url("../assets/images/todo_unchecked.svg") no-repeat center;
-  visibility: visible;
 }
 
 .undone-todo:hover {
+  background-color: $accent-sec;
+}
+
+.signout {
+  @extend %actionBtn;
+  mask: url("../assets/images/signout_icon.svg") no-repeat center;
+  -webkit-mask: url("../assets/images/signout_icon.svg") no-repeat center;
+}
+
+.signout:hover {
   background-color: $accent-sec;
 }
 

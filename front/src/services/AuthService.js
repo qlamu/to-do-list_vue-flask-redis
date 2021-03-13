@@ -21,8 +21,15 @@ export default new (class AuthService {
       axios.defaults.headers.common = {
         Authorization: `Bearer ${json.data.jwt}`,
       };
+      localStorage.setItem("jwt", json.data.jwt);
     }
 
     return json;
   }
+
+  signOut() {
+    axios.defaults.headers.common = {};
+    localStorage.removeItem("jwt");
+  }
+
 })();

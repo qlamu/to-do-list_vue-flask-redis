@@ -83,9 +83,13 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "@/assets/variables";
 @import "@/assets/icons";
+
+h1 {
+  margin-left: 0;
+}
 
 #authComponent {
   margin: auto;

@@ -26,6 +26,11 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+if(localStorage.getItem("jwt") !== null) {
+  axios.defaults.headers.common = {
+    Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+  };
+}
 
 new Vue({
   router,

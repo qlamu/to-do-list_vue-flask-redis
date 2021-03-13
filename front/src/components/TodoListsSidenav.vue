@@ -1,8 +1,11 @@
 <template>
   <div>
     <h1>
-      <span>Lists</span>
-      <i v-if="isFetchingAPI" class="gg-spinner"></i>
+      <div>
+        <span>Lists</span>
+        <i v-if="isFetchingAPI" class="gg-spinner"></i>
+      </div>
+      <button class="signout" @click="signOut"></button>
     </h1>
     <transition name="scale">
       <div v-if="errorMessage" class="error-alert">{{ errorMessage }}</div>
@@ -42,7 +45,11 @@
           <button id="deleteBtn" @click="deleteList(list.list_id)"></button>
         </div>
         <div v-else class="list-item">
-          <textarea type="text" v-model="editedList.title" v-on:keydown.ctrl.enter="patchEditedList"/>
+          <textarea
+            type="text"
+            v-model="editedList.title"
+            v-on:keydown.ctrl.enter="patchEditedList"
+          />
           <button id="confirmBtn" @click="patchEditedList"></button>
         </div>
       </li>
@@ -52,6 +59,7 @@
 
 <script>
 import ListsService from "@/services/ListsService";
+import AuthService from "@/services/AuthService";
 
 export default {
   name: "TodoLists",
@@ -155,12 +163,18 @@ export default {
     changeSelection(listID) {
       if (this.$route.params.list_id != listID) this.$router.push("/" + listID);
     },
+
+    signOut() {
+      AuthService.signOut();
+      this.$router.push("/login");
+    }
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/assets/variables";
+@import "@/assets/icons";
 
 input[type="text"] {
   background-color: $bg-2;
