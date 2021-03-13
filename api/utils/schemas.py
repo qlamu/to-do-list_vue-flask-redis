@@ -14,12 +14,12 @@ class ListSchema(Schema):
 
 class AddTodoSchema(Schema):
     description = fields.Str(required=True, error_messages={"required": "description is required"})
-    is_done = fields.Int(strict=True, validate=OneOf([0, 1]))
+    is_done = fields.Int(validate=OneOf([0, 1]))
 
 
 class UpdateTodoSchema(Schema):
     description = fields.Str()
-    is_done = fields.Int(strict=True, validate=OneOf([0, 1]))
+    is_done = fields.Int(validate=OneOf([0, 1]))
 
     @validates_schema
     def validate(self, data, **kwargs):
