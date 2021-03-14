@@ -22,11 +22,11 @@ For the Docker deployment the app is served through Gunicorn, a production frien
 
 ## Front: VueJS
 
-The front is a static VueJS app with the following routes:
-- **/**: The Home page with all the lists on the left side and a main panel with the todos of the selected list (empty, because no lsit is selected).
-- **/:id**: Same thing, except the id corresponds the the currently selected list, and the main panel is then filled with the todos of the list `id`.
+The front is a static responsive VueJS app with the following routes:
+- **/**: The Home page with all the lists on the left side and a main panel with the todos of the selected list (empty, because no list is selected).
+- **/:id**: Same thing, except the id corresponds to the currently selected list, and the main panel is then filled with the todos of the list `id`.
 - **/login**: The login page
-- **/signup**: The register page
+- **/signup**: The register page (uses the same component as the login page)
 - **/logs**: Public logs of everything that happens on the API in near real time.
 
 For the Docker deployment the app is served through Nginx, a config file `nginx.conf` has been added to avoid unnatural 404 errors caused by the usage of History Mode for Vue's router.
