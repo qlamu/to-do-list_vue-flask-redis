@@ -2,10 +2,10 @@
   <div>
     <h1>
       <div>
-        <span>Lists</span>
+        <span ref="test">Lists</span>
         <i v-if="isFetchingAPI" class="gg-spinner"></i>
       </div>
-      <button class="signout" @click="signOut"></button>
+      <button class="signout" @click="signOut" title="Sign out"></button>
     </h1>
     <transition name="scale">
       <div v-if="errorMessage" class="error-alert">{{ errorMessage }}</div>
@@ -41,16 +41,17 @@
           v-bind:class="{ active: $route.params.list_id == list.list_id }"
         >
           <span>{{ list.title }}</span>
-          <button id="editBtn" @click="toggleEdit(list.list_id)"></button>
-          <button id="deleteBtn" @click="deleteList(list.list_id)"></button>
+          <button id="editBtn" @click="toggleEdit(list.list_id)" title="Edit"></button>
+          <button id="deleteBtn" @click="deleteList(list.list_id)" title="Delete"></button>
         </div>
-        <div v-else class="list-item">
+        <div v-else class="list-item editActive">
           <textarea
             type="text"
             v-model="editedList.title"
             v-on:keydown.ctrl.enter="patchEditedList"
+            :ref="`titleTextarea${list.list_id}`"
           />
-          <button id="confirmBtn" @click="patchEditedList"></button>
+          <button id="confirmBtn" @click="patchEditedList" title="Save"></button>
         </div>
       </li>
     </ul>
@@ -142,6 +143,9 @@ export default {
 
     toggleEdit(listID) {
       this.editedListID = listID;
+      this.$nextTick(() => {
+        this.$refs[`titleTextarea${listID}`][0].focus()
+      });
     },
 
     patchEditedList() {
@@ -168,7 +172,7 @@ export default {
     signOut() {
       AuthService.signOut();
       this.$router.push("/login");
-    }
+    },
   },
 };
 </script>
@@ -185,5 +189,9 @@ input[type="text"] {
 .active {
   border-left: 3px solid $accent;
   color: $accent;
+}
+
+.editActive {
+  background-color: $bg-2;
 }
 </style>

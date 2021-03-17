@@ -28,6 +28,7 @@
 
 <script>
 import AuthService from "@/services/AuthService";
+import sha256 from "crypto-js/sha256";
 
 export default {
   name: "Authentication",
@@ -53,7 +54,7 @@ export default {
       this.isFetchingAPI = true;
       this.errorMessage = "";
       this.successMessage = "";
-      const resp = AuthService.register(this.username, this.password);
+      const resp = AuthService.register(this.username, sha256(this.password).toString());
       resp
         .then((suc) => {
           this.successMessage = suc.message;
@@ -67,7 +68,7 @@ export default {
       this.isFetchingAPI = true;
       this.errorMessage = "";
       this.successMessage = "";
-      const resp = AuthService.login(this.username, this.password);
+      const resp = AuthService.login(this.username, sha256(this.password).toString());
       resp
         .then(() => this.$router.push("/"))
         .catch((err) => (this.errorMessage = err.response.data.message))
@@ -91,33 +92,50 @@ h1 {
 
 #authComponent {
   margin: auto;
+
+  .auth {
+    background-color: $bg-1;
+    color: $fg-0;
+    border-radius: 3px;
+    display: inline-flex;
+    flex-flow: row wrap;
+    padding: 10px;
+
+    input,
+    button {
+      margin: 10px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      background-color: $bg-2;
+      color: $fg-0;
+      border: 1px solid $bg-3;
+      border-radius: 3px;
+      padding: 10px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: $accent;
+    }
+
+    button {
+      display: flex;
+      justify-content: center;
+    }
+  }
 }
 
-.auth {
-  background-color: $bg-1;
-  color: $fg-0;
-  border-radius: 3px;
-  display: inline-flex;
-  flex-flow: row wrap;
-  padding: 10px;
+@media (max-width: 480px) {
+  #authComponent {
+    min-width: 75vw;
+    display: flex;
+    flex-flow: column;
 
-  input,
-  button {
-    margin: 10px;
-  }
-
-  input[type="text"],
-  input[type="password"] {
-    background-color: $bg-2;
-    color: $fg-0;
-    border: 1px solid $bg-3;
-    border-radius: 3px;
-    padding: 10px;
-  }
-
-  input:focus {
-    outline: none;
-    border-color: $accent;
+    .auth {
+      flex-flow: column wrap;
+    }
   }
 }
 

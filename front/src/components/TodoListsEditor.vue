@@ -2,7 +2,7 @@
   <div>
     <h1>
       <span v-if="list">{{ list.title }}</span>
-      <span v-else>Select a list to continue</span>
+      <span v-else>...</span>
       <i v-if="isFetchingAPI" class="gg-spinner"></i>
     </h1>
     <transition name="scale">
@@ -46,17 +46,18 @@
             <span>{{ todo.description }}</span>
           </div>
           <div>
-            <button id="editBtn" @click="toggleEdit(todo.todo_id)"></button>
-            <button id="deleteBtn" @click="deleteTodo(todo.todo_id)"></button>
+            <button id="editBtn" @click="toggleEdit(todo.todo_id)" title="Edit"></button>
+            <button id="deleteBtn" @click="deleteTodo(todo.todo_id)" title="Delete"></button>
           </div>
         </div>
-        <div v-else class="list-item">
+        <div v-else class="list-item editActive">
           <textarea
             type="text"
             v-model="editedTodo.description"
             v-on:keydown.ctrl.enter="patchEditedTodo"
+            :ref="`descTextarea${todo.todo_id}`"
           />
-          <button id="confirmBtn" @click="patchEditedTodo"></button>
+          <button id="confirmBtn" @click="patchEditedTodo" title="Save"></button>
         </div>
       </li>
     </ul>
@@ -176,6 +177,9 @@ export default {
 
     toggleEdit(todoID) {
       this.editedTodoID = todoID;
+      this.$nextTick(() => {
+        this.$refs[`descTextarea${todoID}`][0].focus();
+      });
     },
 
     patchEditedTodo() {
@@ -259,5 +263,9 @@ ul li:not(:last-child) {
   width: 100%;
   background: $bg-1;
   display: flex;
+}
+
+.editActive {
+  background-color: $bg-2;
 }
 </style>
