@@ -11,7 +11,7 @@ export default new (class AuthService {
     const resp = axios.post(`${process.env.VUE_APP_SERVER}/logger/log`, {
       username: username,
       status: status,
-      message: message
+      message: message,
     });
 
     return (await resp).data;

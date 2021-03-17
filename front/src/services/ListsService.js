@@ -7,7 +7,9 @@ export default new (class ListsService {
   }
 
   async createList(listTitle) {
-    const resp = axios.put(`${process.env.VUE_APP_SERVER}/lists`, { title: listTitle });
+    const resp = axios.put(`${process.env.VUE_APP_SERVER}/lists`, {
+      title: listTitle,
+    });
     return (await resp).data;
   }
 
@@ -22,7 +24,9 @@ export default new (class ListsService {
   }
 
   async patchList(listID, newTitle) {
-    const resp = axios.patch(`${process.env.VUE_APP_SERVER}/lists/${listID}`, { title: newTitle });
+    const resp = axios.patch(`${process.env.VUE_APP_SERVER}/lists/${listID}`, {
+      title: newTitle,
+    });
     return (await resp).data;
   }
 })();

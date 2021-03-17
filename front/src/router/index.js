@@ -35,9 +35,9 @@ const routes = [
     name: "Home",
     component: Home,
   },
-  { 
-    path: "*", 
-    component: NotFound 
+  {
+    path: "*",
+    component: NotFound,
   },
 ];
 

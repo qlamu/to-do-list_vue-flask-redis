@@ -54,7 +54,10 @@ export default {
       this.isFetchingAPI = true;
       this.errorMessage = "";
       this.successMessage = "";
-      const resp = AuthService.register(this.username, sha256(this.password).toString());
+      const resp = AuthService.register(
+        this.username,
+        sha256(this.password).toString()
+      );
       resp
         .then((suc) => {
           this.successMessage = suc.message;
@@ -68,7 +71,10 @@ export default {
       this.isFetchingAPI = true;
       this.errorMessage = "";
       this.successMessage = "";
-      const resp = AuthService.login(this.username, sha256(this.password).toString());
+      const resp = AuthService.login(
+        this.username,
+        sha256(this.password).toString()
+      );
       resp
         .then(() => this.$router.push("/"))
         .catch((err) => (this.errorMessage = err.response.data.message))

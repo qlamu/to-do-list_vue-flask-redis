@@ -30,19 +30,23 @@
       </button>
     </transition>
     <ul>
-      <li
-        v-for="list in sortedLists"
-        :key="list.list_id"
-        @click="changeSelection(list.list_id)"
-      >
+      <li v-for="list in sortedLists" :key="list.list_id">
         <div
           v-if="list.list_id != editedListID"
           class="list-item"
           v-bind:class="{ active: $route.params.list_id == list.list_id }"
         >
-          <span>{{ list.title }}</span>
-          <button id="editBtn" @click="toggleEdit(list.list_id)" title="Edit"></button>
-          <button id="deleteBtn" @click="deleteList(list.list_id)" title="Delete"></button>
+          <span @click="changeSelection(list.list_id)">{{ list.title }}</span>
+          <button
+            id="editBtn"
+            @click="toggleEdit(list.list_id)"
+            title="Edit"
+          ></button>
+          <button
+            id="deleteBtn"
+            @click="deleteList(list.list_id)"
+            title="Delete"
+          ></button>
         </div>
         <div v-else class="list-item editActive">
           <textarea
@@ -51,7 +55,11 @@
             v-on:keydown.ctrl.enter="patchEditedList"
             :ref="`titleTextarea${list.list_id}`"
           />
-          <button id="confirmBtn" @click="patchEditedList" title="Save"></button>
+          <button
+            id="confirmBtn"
+            @click="patchEditedList"
+            title="Save"
+          ></button>
         </div>
       </li>
     </ul>
@@ -133,6 +141,12 @@ export default {
       this.lists.splice(this.lists.indexOf(removedList), 1);
       const resp = ListsService.deleteList(listID);
       resp
+        .then(() => {
+          if (this.$route.params.list_id == listID) {
+            this.$emit("deleteActiveList");
+            this.$router.push("/");
+          }
+        })
         .catch((err) => {
           this.errorMessage =
             err.response?.data.message || "Error: Could not reach server";
@@ -144,7 +158,7 @@ export default {
     toggleEdit(listID) {
       this.editedListID = listID;
       this.$nextTick(() => {
-        this.$refs[`titleTextarea${listID}`][0].focus()
+        this.$refs[`titleTextarea${listID}`][0].focus();
       });
     },
 

@@ -31,5 +31,4 @@ export default new (class AuthService {
     axios.defaults.headers.common = {};
     localStorage.removeItem("jwt");
   }
-
 })();

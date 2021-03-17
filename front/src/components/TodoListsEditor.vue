@@ -46,8 +46,16 @@
             <span>{{ todo.description }}</span>
           </div>
           <div>
-            <button id="editBtn" @click="toggleEdit(todo.todo_id)" title="Edit"></button>
-            <button id="deleteBtn" @click="deleteTodo(todo.todo_id)" title="Delete"></button>
+            <button
+              id="editBtn"
+              @click="toggleEdit(todo.todo_id)"
+              title="Edit"
+            ></button>
+            <button
+              id="deleteBtn"
+              @click="deleteTodo(todo.todo_id)"
+              title="Delete"
+            ></button>
           </div>
         </div>
         <div v-else class="list-item editActive">
@@ -57,7 +65,11 @@
             v-on:keydown.ctrl.enter="patchEditedTodo"
             :ref="`descTextarea${todo.todo_id}`"
           />
-          <button id="confirmBtn" @click="patchEditedTodo" title="Save"></button>
+          <button
+            id="confirmBtn"
+            @click="patchEditedTodo"
+            title="Save"
+          ></button>
         </div>
       </li>
     </ul>
@@ -72,6 +84,7 @@ export default {
   name: "TodoListsEditor",
   props: {
     refresh: Boolean,
+    deletedCurrent: Boolean,
   },
   data() {
     return {
@@ -232,6 +245,14 @@ export default {
     refresh: {
       handler() {
         this.fetchListInfos();
+      },
+    },
+
+    deletedCurrent: {
+      handler() {
+        console.log("EMIT");
+        this.list = null;
+        this.todos = [];
       },
     },
   },
