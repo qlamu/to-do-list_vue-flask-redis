@@ -1,6 +1,8 @@
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
+ARG VUE_APP_SERVER
+ENV VUE_APP_SERVER ${VUE_APP_SERVER}
 RUN npm install
 COPY . .
 RUN npm run build

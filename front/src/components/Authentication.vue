@@ -45,12 +45,12 @@ export default {
     };
   },
   computed: {
-    formValidated: function() {
+    formValidated: function () {
       return this.username != "" && this.password != "";
     },
   },
   methods: {
-    register: function() {
+    register: function () {
       this.isFetchingAPI = true;
       this.errorMessage = "";
       this.successMessage = "";
@@ -63,11 +63,15 @@ export default {
           this.successMessage = suc.message;
           this.$router.push("/login");
         })
-        .catch((err) => (this.errorMessage = err.response.data.message))
+        .catch(
+          (err) =>
+            (this.errorMessage =
+              err.response?.data.message || "Error: Could not reach server")
+        )
         .finally(() => (this.isFetchingAPI = false));
     },
 
-    login: function() {
+    login: function () {
       this.isFetchingAPI = true;
       this.errorMessage = "";
       this.successMessage = "";
@@ -77,11 +81,15 @@ export default {
       );
       resp
         .then(() => this.$router.push("/"))
-        .catch((err) => (this.errorMessage = err.response.data.message))
+        .catch(
+          (err) =>
+            (this.errorMessage =
+              err.response?.data.message || "Error: Could not reach server")
+        )
         .finally(() => (this.isFetchingAPI = false));
     },
 
-    toggleRegisterView: function() {
+    toggleRegisterView: function () {
       this.$router.push(this.showRegister ? "/login" : "/signup");
     },
   },

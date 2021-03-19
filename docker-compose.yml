@@ -25,9 +25,12 @@ services:
 
   front:
     container_name: qlNGINX
-    build: ./front
+    build: 
+      context: ./front
+      args:
+        VUE_APP_SERVER: http://localhost:8000
     ports: 
-      - 8080:80
+      - 80:80
 
 volumes:
   redis_database:
